@@ -12,6 +12,8 @@ class Ability
     can :manage, Account, user_id: user.id
     can :index, Source
 
+    can [:new, :create], Import, account_id: user.account_ids
+
     if user.is?(:admin)
       can :access, :admin
       can :manage, :all

@@ -19,7 +19,9 @@ Rails.application.routes.draw do
   match 'test/exception', to: 'test#exception', via: :get
   match 'test/email', to: 'test#email', via: :get
 
-  resources :accounts
+  resources :accounts do
+    resources :imports, only: [:new, :create]
+  end
 
   root to: 'static_pages#home'
 end

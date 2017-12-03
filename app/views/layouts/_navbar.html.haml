@@ -9,7 +9,7 @@
     .collapse.navbar-collapse
       %ul.nav.navbar-nav.navbar-right
         - if current_user.present?
-          - if false && can?(:index, Account)
+          - if can?(:index, Account)
             = nav_link_to 'Accounts', accounts_path
 
           = nav_dropdown 'Settings' do

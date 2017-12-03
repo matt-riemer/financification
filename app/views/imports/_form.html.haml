@@ -1,0 +1,5 @@
+= simple_form_for(import, url: account_imports_path(import.account)) do |f|
+  = f.input :account, as: :effective_static_control
+  = f.input :content, as: :text
+
+  = simple_form_submit(f)

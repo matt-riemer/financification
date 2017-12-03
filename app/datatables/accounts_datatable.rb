@@ -7,15 +7,14 @@ class AccountsDatatable < Effective::Datatable
     col :created_at, visible: false
     col :id, visible: false
 
-    col :user
     col :name
     col :category
 
-    actions_col
+    actions_col destroy: false
   end
 
   collection do
-    Account.all
+    Account.where(user_id: attributes[:user_id]).all
   end
 
 end

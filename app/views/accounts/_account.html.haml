@@ -9,3 +9,30 @@
     %tr
       %th Category
       %td= account.category
+
+%h2 Debits / Income
+%table.table
+  - account.debits.each do |dr|
+    %tr
+      %td= dr
+      %td= dr.date
+      %td= price_to_currency(dr.amount)
+      %td= dr.note
+
+%h2 Credits / Income
+%table.table
+  - account.credits.each do |cr|
+    %tr
+      %td= cr
+      %td= cr.date
+      %td= price_to_currency(cr.amount)
+      %td= cr.note
+
+%h2 Imports
+%table.table
+  - account.imports.each do |import|
+    %tr
+      %td= import.created_at.strftime('%F')
+      %td= import.content.gsub("\n", '<br>')
+
+

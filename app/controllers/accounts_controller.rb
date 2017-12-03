@@ -3,12 +3,12 @@ class AccountsController < ApplicationController
 
   include Effective::CrudController
 
+  resource_scope -> { Account.deep.where(user: current_user) }
+
   protected
 
   def account_params
-    params.require(:account).permit(:id,
-      :user_id, :name, :category
-    )
+    params.require(:account).permit(:id, :name, :category)
   end
 
 end

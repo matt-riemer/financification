@@ -17,4 +17,8 @@ class Item < ApplicationRecord
   validates :date, presence: true
   validates :amount, presence: true
 
+  def to_s
+    source&.name || name.presence || 'New Item'
+  end
+
 end

@@ -1,0 +1,21 @@
+- resource = (@_effective_resource || Effective::Resource.new(controller_path))
+
+.row
+  .col-xs-8
+    %h1= @page_title
+  .col-xs-4.text-right
+    -# Import
+    - if can?(:new, Import.new(account: @account))
+      = link_to 'Import Items', new_account_import_path(@account), class: 'btn btn-primary'
+
+    - resource.member_post_actions.each do |action|
+      - if can?(action, @account) && (path = resource.action_path(action, @account)).present?
+        = link_to action.to_s.titleize, path, class: 'btn btn-sm btn-primary', data: { confirm: "Really #{action} #{@account}?", method: :post }
+
+    - if can?(:destroy, @account) && (path = resource.action_path(:destroy, @account)).present?
+      = link_to 'Delete', path, class: 'btn btn-sm btn-danger', data: { confirm: "Really delete #{@account}?", method: :delete }
+
+= render @account
+
+.form-actions
+  = link_to 'Continue', (resource.action_path(:index) || root_path), class: 'btn btn-primary'
