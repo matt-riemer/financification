@@ -1,5 +1,11 @@
 = simple_form_for(import, url: account_imports_path(import.account)) do |f|
   = f.input :account, as: :effective_static_control
+
+  = f.simple_fields_for :items do |fi|
+    .row
+      .col-sm-6= fi.input :source
+      .col-sm-6= fi.input :name
+
   = f.input :content, as: :text
 
   = simple_form_submit(f)

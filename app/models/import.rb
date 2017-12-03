@@ -1,14 +1,43 @@
+require 'csv'
+
 class Import < ApplicationRecord
   belongs_to :account
+
+  has_many :items
+  accepts_nested_attributes_for :items
 
   # Attributes
   # content      :text
   # timestamps
 
+  before_validation :build_items
   validates :account, presence: true
+
+  validate do
+    self.errors.add(:base, 'uhoh')
+  end
 
   def to_s
     created_at&.strftime('%F') || 'New Import'
+  end
+
+  private
+
+  # So this is going to parse each line from `content` and then find_or_initialize an item for each line
+  # Try to guess the source
+  # Any items where the source is not defined, we can do a create on
+  def build_items
+    begin
+      CSV.parse(content.to_s) do |row|
+        date, name, amount, note = row[0], row[1], row[2], row[3]
+
+        date = Time.zone.parse(date)
+
+        self.items.build(account: account, amount: amount, date: date, name: name, note: note)
+      end
+    rescue => e
+      self.errors.add(:content, e.message)
+    end
   end
 
 end

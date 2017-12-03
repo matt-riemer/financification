@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20171203162321) do
   create_table "items", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "source_id"
+    t.bigint "import_id"
     t.string "name"
     t.datetime "date"
     t.integer "amount"
@@ -118,6 +119,7 @@ ActiveRecord::Schema.define(version: 20171203162321) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["account_id"], name: "index_items_on_account_id"
+    t.index ["import_id"], name: "index_items_on_import_id"
     t.index ["source_id"], name: "index_items_on_source_id"
   end
 

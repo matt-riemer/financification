@@ -16,7 +16,9 @@ class ImportsController < ApplicationController
   end
 
   def import_params
-    params.require(:import).permit(:account_id, :content)
+    params.require(:import).permit(:account_id, :content,
+      items_attributes: [:source_id, :name]
+    )
   end
 
 end

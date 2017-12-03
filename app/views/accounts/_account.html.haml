@@ -33,6 +33,6 @@
   - account.imports.each do |import|
     %tr
       %td= import.created_at.strftime('%F')
-      %td= import.content.gsub("\n", '<br>')
+      %td= import.content.gsub("\n", '<br>').html_safe
 
 
