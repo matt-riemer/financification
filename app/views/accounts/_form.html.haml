@@ -1,0 +1,6 @@
+= simple_form_for(account) do |f|
+  = f.input :user_id, as: :effective_select, collection: User.all
+  = f.input :name
+  = f.input :category
+
+  = simple_form_submit(f)

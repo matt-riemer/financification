@@ -32,6 +32,7 @@ class Ability
     can :show, Effective::StyleGuide
     can :index, EffectiveStyleGuideDatatable
     can :manage, Effective::Trash, user_id: user.id
+    can :manage, Account
 
     if user.is?(:admin)
       can :manage, Effective::Asset
