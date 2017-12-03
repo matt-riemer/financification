@@ -6,7 +6,7 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module ExampleWebsite
+module Financification
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -29,7 +29,7 @@ module ExampleWebsite
     config.filter_parameters += [:password]
 
     # Session options
-    config.session_store :cookie_store, key: '_example_session'
+    config.session_store :cookie_store, key: '_financification_session'
 
     # sucker_punch runs active jobs asynchronously in the web server process
     config.active_job.queue_adapter = :sucker_punch
