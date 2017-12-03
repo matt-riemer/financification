@@ -31,6 +31,8 @@ class Import < ApplicationRecord
       CSV.parse(content.to_s) do |row|
         date, name, amount, note = row[0], row[1], row[2], row[3]
 
+        binding.pry
+
         date = Time.zone.parse(date)
 
         self.items.build(account: account, amount: amount, date: date, name: name, note: note)

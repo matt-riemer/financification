@@ -90,6 +90,15 @@ ActiveRecord::Schema.define(version: 20171203162321) do
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.string "category"
+    t.boolean "debit", default: false
+    t.boolean "credit", default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "customers", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.string "stripe_customer_id"
@@ -110,7 +119,7 @@ ActiveRecord::Schema.define(version: 20171203162321) do
 
   create_table "items", force: :cascade do |t|
     t.bigint "account_id"
-    t.bigint "source_id"
+    t.bigint "category_id"
     t.bigint "import_id"
     t.string "name"
     t.datetime "date"
@@ -119,8 +128,8 @@ ActiveRecord::Schema.define(version: 20171203162321) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["account_id"], name: "index_items_on_account_id"
+    t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["import_id"], name: "index_items_on_import_id"
-    t.index ["source_id"], name: "index_items_on_source_id"
   end
 
   create_table "logs", id: :serial, force: :cascade do |t|
@@ -246,13 +255,6 @@ ActiveRecord::Schema.define(version: 20171203162321) do
     t.datetime "created_at"
     t.index ["regionable_id"], name: "index_regions_on_regionable_id"
     t.index ["regionable_type", "regionable_id"], name: "index_regions_on_regionable_type_and_regionable_id"
-  end
-
-  create_table "sources", force: :cascade do |t|
-    t.string "name"
-    t.string "category"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "subscriptions", id: :serial, force: :cascade do |t|

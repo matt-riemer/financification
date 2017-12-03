@@ -3,7 +3,7 @@
 class Item < ApplicationRecord
   belongs_to :account
   belongs_to :import
-  belongs_to :source
+  belongs_to :category
 
   # Attributes
   # name        :string
@@ -13,13 +13,13 @@ class Item < ApplicationRecord
   # timestamps
 
   validates :account, presence: true
-  validates :source, presence: true
+  validates :category, presence: true
 
   validates :date, presence: true
   validates :amount, presence: true
 
   def to_s
-    source&.name || name.presence || 'New Item'
+    category&.name || name.presence || 'New Item'
   end
 
 end

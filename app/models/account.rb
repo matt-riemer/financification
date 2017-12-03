@@ -11,12 +11,12 @@ class Account < ApplicationRecord
   has_many :imports, dependent: :delete_all
   has_many :items, dependent: :delete_all
 
-  has_many :debits, -> { joins(:source).where(sources: { category: 'Debit' }) }, class_name: 'Item'    # Incomes - Increase value of Asset account
-  has_many :credits, -> { joins(:source).where(sources: { category: 'Credit' }) }, class_name: 'Item'  # Expenses - Decrease value of Asset account
+  has_many :debits, -> { joins(:category).where(categories: { debit: true }) }, class_name: 'Item'    # Incomes - Increase value of Asset account
+  has_many :credits, -> { joins(:category).where(categories: { credit: true }) }, class_name: 'Item'  # Expenses - Decrease value of Asset account
 
   CATEGORIES = ['Asset', 'Liability', 'Income/Revenue', 'Expense', 'Equity/Capital']
 
-  scope :deep, -> { includes(debits: :source, credits: :source) }
+  scope :deep, -> { includes(debits: :category, credits: :category) }
 
   # Attributes
   # name        :string

@@ -10,7 +10,7 @@ class Ability
 
     # All Users
     can :manage, Account, user_id: user.id
-    can :index, Source
+    can :index, Category
 
     can [:new, :create], Import, account_id: user.account_ids
 
