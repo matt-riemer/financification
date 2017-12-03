@@ -23,7 +23,7 @@ gem 'turbolinks'
 
 gem 'effective_addresses'
 gem 'effective_assets'
-gem 'effective_datatables'
+gem 'effective_datatables', path: '~/Sites/effective_datatables'
 gem 'effective_developer', path: '~/Sites/effective_developer'
 gem 'effective_form_inputs'
 gem 'effective_logging'

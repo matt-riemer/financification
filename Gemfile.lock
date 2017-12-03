@@ -1,4 +1,14 @@
 PATH
+  remote: ~/Sites/effective_datatables
+  specs:
+    effective_datatables (3.3.8)
+      coffee-rails
+      effective_resources (>= 0.7.0)
+      rails (>= 3.2.0)
+      sass-rails
+      simple_form
+
+PATH
   remote: ~/Sites/effective_developer
   specs:
     effective_developer (0.2.10)
@@ -148,12 +158,6 @@ GEM
     effective_ckeditor (1.8.2)
       rails (>= 3.2.0)
       sass-rails
-    effective_datatables (3.0.6)
-      coffee-rails
-      effective_resources (>= 0.3.0)
-      rails (>= 3.2.0)
-      sass-rails
-      simple_form
     effective_form_inputs (1.1.0)
       rails (>= 3.2.0)
       simple_form (>= 3.1.0)
@@ -455,7 +459,7 @@ DEPENDENCIES
   dotenv-rails
   effective_addresses
   effective_assets
-  effective_datatables
+  effective_datatables!
   effective_developer!
   effective_form_inputs
   effective_logging
