@@ -5,6 +5,7 @@ class Item < ApplicationRecord
   belongs_to :source
 
   # Attributes
+  # name        :string
   # date        :datetime
   # amount      :integer
   # note        :text

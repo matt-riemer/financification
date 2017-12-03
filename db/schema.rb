@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 20171203151450) do
   create_table "items", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "source_id"
+    t.string "name"
     t.datetime "date"
     t.integer "amount"
     t.text "note"
