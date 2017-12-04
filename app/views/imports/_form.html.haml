@@ -1,9 +1,9 @@
 = simple_form_for(import, url: account_imports_path(import.account)) do |f|
   = f.input :account, as: :effective_static_control
 
-  - if (invalids = f.object.invalid_items.length) > 0
+  - if (uncategorized = f.object.uncategorized_items.length) > 0 && f.object.errors[:content].blank?
     %h2 Uncategorized items
-    %p Please create rules to categorize the following #{pluralize(invalids, 'invalid item')}:
+    %p Please create rules to categorize the following #{pluralize(uncategorized, 'item')}:
 
     = f.simple_fields_for :rules, f.object.new_rules do |fr|
       .import-rule{style: ('display: none;' if fr.object.valid?)}
@@ -56,5 +56,14 @@
     %hr
 
   = f.input :content, as: :text
+
+  - if f.object.content.blank? || f.object.errors[:content].present?
+    .well
+      %p
+        %strong Example content
+
+      2017-01-01,528 - LD SOUTHGATE       EDMONTON,21.44
+      %br
+      2017-01-15,PLEASANTVIEW SOBEYSQPS   EDMONTON,45.83
 
   = simple_form_submit(f)

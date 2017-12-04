@@ -33,7 +33,7 @@ class Import < ApplicationRecord
     items.select { |item| item.errors.blank? }
   end
 
-  def invalid_items
+  def uncategorized_items
     items.reject { |item| item.category.present? && item.category.valid? }
   end
 
@@ -47,8 +47,15 @@ class Import < ApplicationRecord
   # Try to guess the source
   # Any items where the source is not defined, we can do a create on
   def import!
-    begin
-      CSV.parse(content.to_s) do |row|
+    rows = begin
+      CSV.parse(content.to_s)
+    rescue => e
+      self.errors.add(:content, "CSV parse error: #{e.message}")
+      return false
+    end
+
+    rows.each_with_index do |row, index|
+      begin
         date, name, amount, note = row[0], row[1], row[2], row[3]
 
         date = Time.zone.parse(date)
@@ -57,15 +64,18 @@ class Import < ApplicationRecord
 
         item.category = current_user.rules.find { |rule| rule.match?(item) }&.category
         item.category ||= new_rules.find { |rule| rule.match?(item) }&.category
+      rescue => e
+        self.errors.add(:content, "Line #{index+1} (#{row.join}): #{e.message}")
+        return false
       end
-    rescue => e
-      self.errors.add(:content, e.message)
     end
+
+    true
   end
 
   def build_rules
-    # Build a new rule for any items that are invalid
-    invalid_items.each do |item|
+    # Build a new rule for any items that are missing a category
+    uncategorized_items.each do |item|
       new_rules.find { |rule| rule.item_key == item.item_key } || self.rules.build(item_key: item.item_key, name_includes: item.name)
     end
 
