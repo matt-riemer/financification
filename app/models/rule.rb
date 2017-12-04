@@ -8,7 +8,7 @@ class Rule < ApplicationRecord
   belongs_to :import      # Just so we can build, we don't actually use this.
 
   belongs_to :category
-  accepts_nested_attributes_for :category
+  accepts_nested_attributes_for :category, reject_if: Proc.new { |atts| atts['name'].blank? }
 
   # Attributes
   # name_includes            :string
@@ -17,7 +17,7 @@ class Rule < ApplicationRecord
 
   validates :name_includes, presence: true
 
-  validates :category_id, presence: true
+  validates :category_id, presence: true, unless: -> { category&.new_record? }
   validates :user, presence: true
 
   def match?(item)

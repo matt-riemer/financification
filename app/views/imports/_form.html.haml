@@ -24,10 +24,26 @@
             .row
               .col-sm-3.text-right Assign category:
               .col-sm-9
-                = fr.input :category_id, label: false, required: false, as: :effective_select, collection: Category.sorted.all
+                .import-category
+                  .import-category-switch
+                    = link_to '#', title: 'Switch' do
+                      %span.glyphicon.glyphicon-random
 
-                / = fr.simple_fields_for :category, (fr.object.category || fr.object.build_category) do |fc|
-                /   = fc.input :id, label: false, required: false, as: :effective_select, collection: Category.sorted.all, tags: true
+                  .import-category-exists{style: ('display: none' if fr.object.category && fr.object.category.errors.present?)}
+                    = fr.input :category_id, label: false, required: false, as: :effective_select, input_js: { placeholder: 'Choose Category' },
+                      collection: Category.sorted.all
+
+                  .import-category-create{style: ('display: none' unless fr.object.category && fr.object.category.errors.present?)}
+                    = fr.simple_fields_for :category, (fr.object.category || fr.object.build_category) do |fc|
+                      = fc.input :name, label: false, required: false, placeholder: 'New Category Name'
+                      .row
+                        .col-sm-8
+                          = fc.input :heading, label: false, required: false, as: :effective_select, input_js: { placeholder: 'Heading' },
+                            collection: Category.sorted.pluck(:heading).uniq.sort
+                        .col-sm-4
+                          = fc.input :debit_or_credit, label: false, required: false, as: :effective_radio_buttons, inline: true,
+                            collection: ['Debit', 'Credit'], checked: fc.object.debit_or_credit
+
             .row
               .col-sm-3.text-right when name includes:
               .col-sm-7= fr.input :name_includes, label: false, required: false
@@ -43,26 +59,26 @@
       .row
         .col-sm-1
           %strong Date
-        .col-sm-1
+        .col-sm-1.text-right
           %strong Amount
-        .col-sm-5
+        .col-sm-4
           %strong Name
         .col-sm-2
           %strong Category
-        .col-sm-3
+        .col-sm-4
           %strong Rule
 
       - f.object.valid_items.each do |item|
         .row
           .col-sm-1= item.date&.strftime('%F')
-          .col-sm-1= price_to_currency(item.amount)
-          .col-sm-5
+          .col-sm-1.text-right= price_to_currency(item.amount)
+          .col-sm-4
             = item.name
             - if item.note.present?
               %br
               Note: #{item.note}
           .col-sm-2= item.category
-          .col-sm-3= item.rule
+          .col-sm-4= item.rule
 
     %hr
 

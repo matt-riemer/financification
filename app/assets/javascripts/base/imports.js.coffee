@@ -12,3 +12,12 @@ $(document).on 'click', '[data-snip]', (event) ->
 $(document).on 'mouseup', "input[name$='[name_includes]']", (event) ->
   $name = $(event.currentTarget)
   $name.data('import-snip', ($name.val() || '').substring(this.selectionStart, this.selectionEnd).trim())
+
+# Toggle existing / new category
+$(document).on 'click', '.import-category-switch', (event) ->
+  $switch = $(event.currentTarget)
+
+  $switch.siblings('.import-category-exists').toggle()
+  $switch.siblings('.import-category-create').toggle()
+
+  false

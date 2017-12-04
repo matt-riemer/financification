@@ -5,11 +5,11 @@ class Import < ApplicationRecord
 
   belongs_to :account
 
-  has_many :items
-  accepts_nested_attributes_for :items
-
   has_many :rules
   accepts_nested_attributes_for :rules
+
+  has_many :items
+  accepts_nested_attributes_for :items
 
   # Attributes
   # content      :text
