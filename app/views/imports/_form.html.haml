@@ -13,7 +13,9 @@
               .col-sm-12= fr.object.item.name
             .row
               .col-sm-6= fr.object.item.date&.strftime('%F')
-              .col-sm-6= fr.object.item.amount
+              .col-sm-6= price_to_currency(fr.object.item.amount)
+            .row
+              .col-sm-12= fr.object.item.note
 
           .col-sm-7
             = fr.input :user_id, as: :hidden
@@ -34,6 +36,8 @@
           .col-sm-1
             = link_to 'Skip', '#', class: 'btn btn-primary', 'data-skip' => true
 
+    %hr
+
   - if f.object.valid_items.present?
     .well
       .row
@@ -50,8 +54,12 @@
         .row
           .col-sm-3= item.category
           .col-sm-2= item.date&.strftime('%F')
-          .col-sm-5= item.name
-          .col-sm-2= item.amount
+          .col-sm-5
+            = item.name
+            - if item.note.present?
+              %br
+              Note: #{item.note}
+          .col-sm-2= price_to_currency(item.amount)
 
     %hr
 

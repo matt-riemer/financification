@@ -59,6 +59,7 @@ class Import < ApplicationRecord
         date, name, amount, note = row[0], row[1], row[2], row[3]
 
         date = Time.zone.parse(date)
+        amount = Effective::Attribute.new(:price).parse(amount)
 
         item = self.items.build(account: account, date: date, name: name, amount: amount, note: note)
 
