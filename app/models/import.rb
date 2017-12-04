@@ -63,8 +63,8 @@ class Import < ApplicationRecord
 
         item = self.items.build(account: account, date: date, name: name, amount: amount, note: note)
 
-        item.category = current_user.rules.find { |rule| rule.match?(item) }&.category
-        item.category ||= new_rules.find { |rule| rule.match?(item) }&.category
+        item.rule = (current_user.rules.find { |rule| rule.match?(item) } || new_rules.find { |rule| rule.match?(item) })
+        item.category = item.rule&.category
       rescue => e
         self.errors.add(:content, "Line #{index+1} (#{row.join}): #{e.message}")
         return false

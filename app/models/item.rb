@@ -1,6 +1,8 @@
 # A line item from a bank account statement
 
 class Item < ApplicationRecord
+  attr_accessor :rule
+
   belongs_to :account
   belongs_to :import
 

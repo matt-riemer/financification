@@ -24,4 +24,8 @@ class Rule < ApplicationRecord
     item.name.include?(name_includes)
   end
 
+  def to_s
+    "Name includes: #{name_includes}"
+  end
+
 end

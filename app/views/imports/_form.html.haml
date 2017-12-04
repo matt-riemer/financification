@@ -41,25 +41,28 @@
   - if f.object.valid_items.present? && f.object.errors[:content].blank?
     .well
       .row
-        .col-sm-3
-          %strong Category
-        .col-sm-2
+        .col-sm-1
           %strong Date
+        .col-sm-1
+          %strong Amount
         .col-sm-5
           %strong Name
         .col-sm-2
-          %strong Amount
+          %strong Category
+        .col-sm-3
+          %strong Rule
 
       - f.object.valid_items.each do |item|
         .row
-          .col-sm-3= item.category
-          .col-sm-2= item.date&.strftime('%F')
+          .col-sm-1= item.date&.strftime('%F')
+          .col-sm-1= price_to_currency(item.amount)
           .col-sm-5
             = item.name
             - if item.note.present?
               %br
               Note: #{item.note}
-          .col-sm-2= price_to_currency(item.amount)
+          .col-sm-2= item.category
+          .col-sm-3= item.rule
 
     %hr
 

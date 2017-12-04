@@ -16,6 +16,13 @@ PATH
       rails (>= 3.2.0)
 
 PATH
+  remote: ~/Sites/effective_form_inputs
+  specs:
+    effective_form_inputs (1.1.12)
+      rails (>= 3.2.0)
+      simple_form (>= 3.1.0)
+
+PATH
   remote: ~/Sites/effective_resources
   specs:
     effective_resources (0.7.1)
@@ -158,9 +165,6 @@ GEM
     effective_ckeditor (1.8.2)
       rails (>= 3.2.0)
       sass-rails
-    effective_form_inputs (1.1.0)
-      rails (>= 3.2.0)
-      simple_form (>= 3.1.0)
     effective_logging (1.10.10)
       coffee-rails
       devise
@@ -461,7 +465,7 @@ DEPENDENCIES
   effective_assets
   effective_datatables!
   effective_developer!
-  effective_form_inputs
+  effective_form_inputs!
   effective_logging
   effective_orders
   effective_pages
