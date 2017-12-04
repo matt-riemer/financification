@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 20171204163910) do
   create_table "items", force: :cascade do |t|
     t.bigint "account_id"
     t.bigint "category_id"
+    t.bigint "rule_id"
     t.bigint "import_id"
     t.string "name"
     t.datetime "date"
@@ -130,6 +131,7 @@ ActiveRecord::Schema.define(version: 20171204163910) do
     t.index ["account_id"], name: "index_items_on_account_id"
     t.index ["category_id"], name: "index_items_on_category_id"
     t.index ["import_id"], name: "index_items_on_import_id"
+    t.index ["rule_id"], name: "index_items_on_rule_id"
   end
 
   create_table "logs", id: :serial, force: :cascade do |t|

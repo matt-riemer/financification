@@ -1,10 +1,9 @@
 # A line item from a bank account statement
 
 class Item < ApplicationRecord
-  attr_accessor :rule
-
   belongs_to :account
   belongs_to :import
+  belongs_to :rule
 
   belongs_to :category
   accepts_nested_attributes_for :category
@@ -18,6 +17,7 @@ class Item < ApplicationRecord
 
   validates :account, presence: true
   validates :category, presence: true
+  validates :rule, presence: true
 
   validates :date, presence: true
   validates :amount, presence: true

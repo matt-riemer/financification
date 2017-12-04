@@ -3,6 +3,7 @@ class CreateItems < ActiveRecord::Migration[5.1]
     create_table :items do |t|
       t.references :account
       t.references :category
+      t.references :rule
       t.references :import
       t.string :name
       t.datetime :date
