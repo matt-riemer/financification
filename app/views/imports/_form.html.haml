@@ -38,7 +38,7 @@
 
     %hr
 
-  - if f.object.valid_items.present?
+  - if f.object.valid_items.present? && f.object.errors[:content].blank?
     .well
       .row
         .col-sm-3
@@ -70,8 +70,10 @@
       %p
         %strong Example content
 
-      2017-01-01,528 - LD SOUTHGATE       EDMONTON,21.44
+      2017-01-01,SAFEWAY,21.45
       %br
-      2017-01-15,PLEASANTVIEW SOBEYSQPS   EDMONTON,45.83
+      2017-01-01,ROGERS WIRELESS,192.55,cellphone activation
+      %br
+      2017-01-02,PAYMENT - THANK YOU,214.00
 
   = simple_form_submit(f)
