@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171203162321) do
+ActiveRecord::Schema.define(version: 20171204163910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -255,6 +255,18 @@ ActiveRecord::Schema.define(version: 20171203162321) do
     t.datetime "created_at"
     t.index ["regionable_id"], name: "index_regions_on_regionable_id"
     t.index ["regionable_type", "regionable_id"], name: "index_regions_on_regionable_type_and_regionable_id"
+  end
+
+  create_table "rules", force: :cascade do |t|
+    t.bigint "category_id"
+    t.bigint "import_id"
+    t.bigint "user_id"
+    t.string "name_includes"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["category_id"], name: "index_rules_on_category_id"
+    t.index ["import_id"], name: "index_rules_on_import_id"
+    t.index ["user_id"], name: "index_rules_on_user_id"
   end
 
   create_table "subscriptions", id: :serial, force: :cascade do |t|

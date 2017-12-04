@@ -1,16 +1,24 @@
 require 'csv'
 
 class Import < ApplicationRecord
+  attr_accessor :current_user
+
   belongs_to :account
 
   has_many :items
   accepts_nested_attributes_for :items
 
+  has_many :rules
+  accepts_nested_attributes_for :rules
+
   # Attributes
   # content      :text
   # timestamps
 
-  before_validation :build_items
+  before_validation :import!
+  after_validation :build_rules
+
+  validates :current_user, presence: true
   validates :account, presence: true
 
   validate do
@@ -21,24 +29,44 @@ class Import < ApplicationRecord
     created_at&.strftime('%F') || 'New Import'
   end
 
-  private
+  def valid_items
+    items.select { |item| item.errors.blank? }
+  end
+
+  def invalid_items
+    items.reject { |item| item.category.present? && item.category.valid? }
+  end
+
+  def new_rules
+    rules.reject { |rule| rule.persisted? }
+  end
+
+  protected
 
   # So this is going to parse each line from `content` and then find_or_initialize an item for each line
   # Try to guess the source
   # Any items where the source is not defined, we can do a create on
-  def build_items
+  def import!
     begin
       CSV.parse(content.to_s) do |row|
         date, name, amount, note = row[0], row[1], row[2], row[3]
 
-        binding.pry
-
         date = Time.zone.parse(date)
 
-        self.items.build(account: account, amount: amount, date: date, name: name, note: note)
+        item = self.items.build(account: account, date: date, name: name, amount: amount, note: note)
+
+        item.category = current_user.rules.find { |rule| rule.match?(item) }&.category
+        item.category ||= new_rules.find { |rule| rule.match?(item) }&.category
       end
     rescue => e
       self.errors.add(:content, e.message)
+    end
+  end
+
+  def build_rules
+    invalid_items.each do |item|
+      rule = new_rules.find { |rule| rule.item_key == item.rule_key } || self.rules.build(name_includes: item.name)
+      rule.assign_attributes(item: item, item_key: item.rule_key, user: current_user)
     end
   end
 

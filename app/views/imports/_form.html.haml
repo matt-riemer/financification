@@ -1,10 +1,63 @@
 = simple_form_for(import, url: account_imports_path(import.account)) do |f|
   = f.input :account, as: :effective_static_control
 
-  = f.simple_fields_for :items do |fi|
+  - if (invalids = f.object.invalid_items.length) > 0
+    %h2 Uncategorized items
+    %p Please add rules to categorize #{pluralize(invalids, 'invalid item')}.
+
     .row
-      .col-sm-6= fi.input :category
-      .col-sm-6= fi.input :name
+      .col-sm-6
+        %strong Item
+      .col-sm-5
+        %strong New Rule
+    %hr
+
+    = f.simple_fields_for :rules, f.object.new_rules do |fr|
+      .row
+        .col-sm-3
+          .row
+            .col-sm-12= fr.object.item.name
+          .row
+            .col-sm-6= fr.object.item.date&.strftime('%F')
+            .col-sm-6= fr.object.item.amount
+
+        .col-sm-8
+          = fr.input :item_key, as: :hidden
+
+          .row
+            .col-sm-3.text-right
+              %strong Category:
+            .col-sm-9
+              = fr.simple_fields_for :category, (fr.object.category || fr.object.build_category) do |fc|
+                = fc.input :name, label: false, required: false, as: :effective_select, collection: Category.sorted.all.pluck(:name), tags: true
+          .row
+            .col-sm-3.text-right
+              %strong Name Includes:
+            .col-sm-7= fr.input :name_includes, label: false, required: false
+            .col-sm-2.text-right= link_to 'Snip', '#', class: 'btn btn-default'
+
+        .col-sm-1
+          = link_to 'Save', '#', class: 'btn btn-primary'
+
+      %hr
+
+  - if f.object.valid_items.present?
+    .row
+      .col-sm-3
+        %strong Category
+      .col-sm-3
+        %strong Date
+      .col-sm-3
+        %strong Name
+      .col-sm-3
+        %strong Amount
+
+    - f.object.valid_items.each do |item|
+      .row
+        .col-sm-3= item.category
+        .col-sm-3= item.date
+        .col-sm-3= item.name
+        .col-sm-3= item.amount
 
   = f.input :content, as: :text
 
