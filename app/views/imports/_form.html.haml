@@ -22,14 +22,17 @@
             .col-sm-6= fr.object.item.amount
 
         .col-sm-8
+          = fr.input :user_id, as: :hidden
           = fr.input :item_key, as: :hidden
 
           .row
             .col-sm-3.text-right
               %strong Category:
             .col-sm-9
-              = fr.simple_fields_for :category, (fr.object.category || fr.object.build_category) do |fc|
-                = fc.input :name, label: false, required: false, as: :effective_select, collection: Category.sorted.all.pluck(:name), tags: true
+              = fr.input :category_id, label: false, required: false, as: :effective_select, collection: Category.sorted.all
+
+              / = fr.simple_fields_for :category, (fr.object.category || fr.object.build_category) do |fc|
+              /   = fc.input :id, label: false, required: false, as: :effective_select, collection: Category.sorted.all, tags: true
           .row
             .col-sm-3.text-right
               %strong Name Includes:
@@ -41,23 +44,23 @@
 
       %hr
 
-  - if f.object.valid_items.present?
-    .row
-      .col-sm-3
-        %strong Category
-      .col-sm-3
-        %strong Date
-      .col-sm-3
-        %strong Name
-      .col-sm-3
-        %strong Amount
+  / - if f.object.valid_items.present?
+  /   .row
+  /     .col-sm-3
+  /       %strong Category
+  /     .col-sm-3
+  /       %strong Date
+  /     .col-sm-3
+  /       %strong Name
+  /     .col-sm-3
+  /       %strong Amount
 
-    - f.object.valid_items.each do |item|
-      .row
-        .col-sm-3= item.category
-        .col-sm-3= item.date
-        .col-sm-3= item.name
-        .col-sm-3= item.amount
+  /   = f.simple_fields_for :items, f.object.valid_items do |fr|
+  /     .row
+  /       .col-sm-3= fr.input :category_id, label: false, as: :effective_select, collection: Category.sorted.all
+  /       .col-sm-3= fr.object.date
+  /       .col-sm-3= fr.object.name
+  /       .col-sm-3= fr.object.amount
 
   = f.input :content, as: :text
 

@@ -24,17 +24,8 @@ class Item < ApplicationRecord
     category&.name || name.presence || 'New Item'
   end
 
-  def rule_key
-    "#{date.to_i}-#{name}-#{amount}"
+  def item_key
+    "#{date.to_i}-#{name}-#{amount}".hash.to_s.sub('-', '')
   end
-
-  # def category=(obj)
-  #   if obj.kind_of?(String)
-  #     super(Category.where(name: obj).first_or_create)
-  #   else
-  #     super
-  #   end
-
-  # end
 
 end

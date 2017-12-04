@@ -11,3 +11,7 @@ User.new(
   password_confirmation: 'be_effective',
   roles: :admin
 ).save!
+
+
+Category.new(debit: true, name: 'General Income', heading: 'Income').save!
+Category.new(credit: true, name: 'General Expenses', heading: 'Expenses').save!

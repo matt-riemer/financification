@@ -17,7 +17,7 @@ class Rule < ApplicationRecord
 
   validates :name_includes, presence: true
 
-  validates :category, presence: true
+  validates :category_id, presence: true
   validates :user, presence: true
 
   def match?(item)

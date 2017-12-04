@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(version: 20171204163910) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
-    t.string "category"
+    t.string "heading"
     t.boolean "debit", default: false
     t.boolean "credit", default: false
     t.datetime "created_at"

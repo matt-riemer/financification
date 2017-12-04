@@ -21,9 +21,9 @@ class Import < ApplicationRecord
   validates :current_user, presence: true
   validates :account, presence: true
 
-  validate do
-    self.errors.add(:base, 'uhoh')
-  end
+  # validate do
+  #   self.errors.add(:base, 'uhoh')
+  # end
 
   def to_s
     created_at&.strftime('%F') || 'New Import'
@@ -38,7 +38,7 @@ class Import < ApplicationRecord
   end
 
   def new_rules
-    rules.reject { |rule| rule.persisted? }
+    rules.select { |rule| rule.new_record? }
   end
 
   protected
@@ -64,9 +64,15 @@ class Import < ApplicationRecord
   end
 
   def build_rules
+    # Build a new rule for any items that are invalid
     invalid_items.each do |item|
-      rule = new_rules.find { |rule| rule.item_key == item.rule_key } || self.rules.build(name_includes: item.name)
-      rule.assign_attributes(item: item, item_key: item.rule_key, user: current_user)
+      new_rules.find { |rule| rule.item_key == item.item_key } || self.rules.build(item_key: item.item_key, name_includes: item.name)
+    end
+
+    # Assign the items so form works with new and existing (invalid) rules
+    new_rules.each do |rule|
+      item = items.find { |item| rule.item_key == item.item_key }
+      rule.assign_attributes(item: item, item_key: item.item_key, user: current_user)
     end
   end
 
@@ -81,6 +87,6 @@ end
 # 2017-02-15,SENMONTENGAI THE CUBE    KYOTO,77.78
 # 2017-03-01,JR KYOTO ISETAN          KYOTO,5.49
 # 2017-03-15,BLIZZARD ENT*WOW SUB     BLIZZARD.C,30.53
-# 2017-04-01,,RED ROBIN-WEST EDMONTON  EDMONTON,17.57
+# 2017-04-01,RED ROBIN-WEST EDMONTON  EDMONTON,17.57
 # 2017-04-15,JR EAST SHOPPING CENTER  SIBUYAKU,13.05
 # 2017-04-20,PAYMENT - THANK YOU,65.55
