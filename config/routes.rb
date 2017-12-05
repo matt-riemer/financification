@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   match 'test/email', to: 'test#email', via: :get
 
   resources :accounts do
-    resources :imports, only: [:new, :create, :edit]
+    resources :imports, only: [:new, :create, :show]
   end
 
   root to: 'static_pages#home'

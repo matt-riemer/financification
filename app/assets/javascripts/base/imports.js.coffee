@@ -6,7 +6,7 @@ $(document).on 'click', '[data-skip]', (event) ->
 # Name includes snip
 $(document).on 'click', '[data-snip]', (event) ->
   $name = $(event.currentTarget).closest('.import-rule').find("input[name$='[name_includes]']")
-  $name.val($name.data('import-snip') || '')
+  $name.val($name.data('import-snip') || '') if $name.data('import-snip').length > 0
   false
 
 $(document).on 'mouseup', "input[name$='[name_includes]']", (event) ->

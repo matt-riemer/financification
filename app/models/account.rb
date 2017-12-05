@@ -11,8 +11,8 @@ class Account < ApplicationRecord
   has_many :imports, dependent: :delete_all
   has_many :items, dependent: :delete_all
 
-  has_many :debits, -> { joins(:category).where(categories: { debit: true }) }, class_name: 'Item'    # Incomes - Increase value of Asset account
-  has_many :credits, -> { joins(:category).where(categories: { credit: true }) }, class_name: 'Item'  # Expenses - Decrease value of Asset account
+  has_many :debits, -> { where.not(debit: nil) }, class_name: 'Item'    # Incomes - Increase value of Asset account
+  has_many :credits, -> { where.not(credit: nil) }, class_name: 'Item'  # Expenses - Decrease value of Asset account
 
   CATEGORIES = ['Asset', 'Liability', 'Income/Revenue', 'Expense', 'Equity/Capital']
 
@@ -20,7 +20,7 @@ class Account < ApplicationRecord
 
   # Attributes
   # name        :string
-  # category    :string
+  # category    :string   # Just a category string field that does nothing. Not a Category.
   # timestamps
 
   validates :user, presence: true

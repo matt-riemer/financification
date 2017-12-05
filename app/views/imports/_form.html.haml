@@ -1,98 +1,19 @@
 = simple_form_for(import, url: account_imports_path(import.account)) do |f|
-  = f.input :account, as: :effective_static_control
+  %p Create items in <strong>#{f.object.account}</strong>.
 
-  - if (uncategorized = f.object.uncategorized_items.length) > 0 && f.object.errors[:content].blank?
-    %h2 Uncategorized items
-    %p Please create rules to categorize the following #{pluralize(uncategorized, 'item')}:
+  - if f.object.errors[:content].blank?
+    - if f.object.uncategorized_items.present?
+      = render 'categorize', f: f
 
-    = f.simple_fields_for :rules, f.object.new_rules do |fr|
-      .import-rule{style: ('display: none;' if fr.object.valid?)}
-        .row
-          .col-sm-4
-            .row
-              .col-sm-12= fr.object.item.name
-            .row
-              .col-sm-6= fr.object.item.date&.strftime('%F')
-              .col-sm-6= price_to_currency(fr.object.item.amount)
-            .row
-              .col-sm-12= fr.object.item.note
+    - if f.object.invalid_items.present?
+      = render 'invalid', f: f
 
-          .col-sm-7
-            = fr.input :user_id, as: :hidden
-            = fr.input :item_key, as: :hidden
-
-            .row
-              .col-sm-3.text-right Assign category:
-              .col-sm-9
-                .import-category
-                  .import-category-switch
-                    = link_to '#', title: 'Switch' do
-                      %span.glyphicon.glyphicon-random
-
-                  .import-category-exists{style: ('display: none' if fr.object.category && fr.object.category.errors.present?)}
-                    = fr.input :category_id, label: false, required: false, as: :effective_select, input_js: { placeholder: 'Choose Category' },
-                      collection: Category.sorted.all
-
-                  .import-category-create{style: ('display: none' unless fr.object.category && fr.object.category.errors.present?)}
-                    = fr.simple_fields_for :category, (fr.object.category || fr.object.build_category) do |fc|
-                      = fc.input :name, label: false, required: false, placeholder: 'New Category Name'
-                      .row
-                        .col-sm-8
-                          = fc.input :heading, label: false, required: false, as: :effective_select, input_js: { placeholder: 'Heading' },
-                            collection: Category.sorted.pluck(:heading).uniq.sort
-                        .col-sm-4
-                          = fc.input :debit_or_credit, label: false, required: false, as: :effective_radio_buttons, inline: true,
-                            collection: ['Debit', 'Credit'], checked: fc.object.debit_or_credit
-
-            .row
-              .col-sm-3.text-right when name includes:
-              .col-sm-7= fr.input :name_includes, label: false, required: false
-              .col-sm-2.text-right= link_to 'Snip', '#', class: 'btn btn-default', 'data-snip' => true
-
-          .col-sm-1
-            = link_to 'Skip', '#', class: 'btn btn-primary', 'data-skip' => true
-
-    %hr
-
-  - if f.object.valid_items.present? && f.object.errors[:content].blank?
-    .well
-      .row
-        .col-sm-1
-          %strong Date
-        .col-sm-1.text-right
-          %strong Amount
-        .col-sm-4
-          %strong Name
-        .col-sm-2
-          %strong Category
-        .col-sm-4
-          %strong Rule
-
-      - f.object.valid_items.each do |item|
-        .row
-          .col-sm-1= item.date&.strftime('%F')
-          .col-sm-1.text-right= price_to_currency(item.amount)
-          .col-sm-4
-            = item.name
-            - if item.note.present?
-              %br
-              Note: #{item.note}
-          .col-sm-2= item.category
-          .col-sm-4= item.rule
-
-    %hr
+    - if f.object.valid_items.present?
+      = render 'items', f: f, items: f.object.valid_items
 
   = f.input :content, as: :text
 
   - if f.object.content.blank? || f.object.errors[:content].present?
-    .well
-      %p
-        %strong Example content
-
-      2017-01-01,SAFEWAY,21.45
-      %br
-      2017-01-01,ROGERS WIRELESS,192.55,cellphone activation
-      %br
-      2017-01-02,PAYMENT - THANK YOU,214.00
+    = render 'example'
 
   = simple_form_submit(f)

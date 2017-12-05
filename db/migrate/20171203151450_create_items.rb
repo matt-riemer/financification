@@ -6,9 +6,12 @@ class CreateItems < ActiveRecord::Migration[5.1]
       t.references :rule
       t.references :import
       t.string :name
-      t.datetime :date
-      t.integer :amount
+      t.date :date
+      t.integer :debit
+      t.integer :credit
+      t.integer :balance
       t.text :note
+      t.text :original
       t.datetime :created_at
       t.datetime :updated_at
     end

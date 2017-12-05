@@ -1,3 +1,13 @@
+%p Account Type: #{account.category}
+
+= tabs do
+  = tab 'Items' do
+    = render_datatable AccountItemsDatatable.new(account_id: account.id)
+  = tab 'Imports' do
+    = render_datatable AccountImportsDatatable.new(account_id: account.id)
+
+%hr
+
 %table.table
   %tbody
     %tr
@@ -16,7 +26,7 @@
     %tr
       %td= dr
       %td= dr.date
-      %td= price_to_currency(dr.amount)
+      %td= price_to_currency(dr.debit)
       %td= dr.note
 
 %h2 Credits / Income
@@ -25,7 +35,7 @@
     %tr
       %td= cr
       %td= cr.date
-      %td= price_to_currency(cr.amount)
+      %td= price_to_currency(cr.credit)
       %td= cr.note
 
 %h2 Imports
@@ -34,5 +44,3 @@
     %tr
       %td= import.created_at.strftime('%F')
       %td= import.content.gsub("\n", '<br>').html_safe
-
-

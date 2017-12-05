@@ -17,6 +17,8 @@ class Rule < ApplicationRecord
 
   validates :name_includes, presence: true
 
+  # We want to validate category_id so the effective_select says "can't be blank"
+  # But not enforce it when we're creating a new category
   validates :category_id, presence: true, unless: -> { category&.new_record? }
   validates :user, presence: true
 

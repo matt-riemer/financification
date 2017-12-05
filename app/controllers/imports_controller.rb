@@ -5,6 +5,10 @@ class ImportsController < ApplicationController
 
   resource_scope -> { Import.where(account: account) }
 
+  after_error do # The default flash message is terrible
+    flash.now[:danger] = 'More information is required to complete this import.'
+  end
+
   protected
 
   def account

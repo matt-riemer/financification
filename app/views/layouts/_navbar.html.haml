@@ -15,6 +15,6 @@
           = nav_dropdown 'Settings' do
             = nav_link_to 'Account Settings', user_settings_path
             %li.divider
-            %li= link_to 'Sign Out', destroy_user_session_path, method: :delete
+            = nav_link_to 'Sign Out', destroy_user_session_path, method: :delete
         - else
           = nav_link_to 'Sign In', new_user_session_path
