@@ -1,0 +1,16 @@
+= simple_form_for(item, url: item.persisted? ? account_item_path(item.account, item) : account_items_path(item.account)) do |f|
+  .row
+    .col-sm-6= f.input :category_id, as: :effective_select, collection: Category.sorted
+
+  .row
+    .col-sm-2= f.input :date, as: :effective_date_picker
+    .col-sm-4= f.input :name
+    .col-sm-2= f.input :debit, as: :effective_price
+    .col-sm-2= f.input :credit, as: :effective_price
+    .col-sm-2= f.input :balance, as: :effective_price
+
+  .row
+    .col-sm-6= f.input :note, as: :string
+    .col-sm-6= f.input :original, as: :effective_static_control
+
+  = simple_form_submit(f)

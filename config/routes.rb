@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   match 'test/email', to: 'test#email', via: :get
 
   resources :accounts do
+    resources :items, except: [:index, :show]
     resources :imports, only: [:new, :create, :show]
   end
 

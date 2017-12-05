@@ -1,7 +1,7 @@
 # A line item from a bank account statement
 
 class Item < ApplicationRecord
-  attr_accessor :index
+  attr_accessor :index # Just for import
 
   belongs_to :account
   belongs_to :category
@@ -25,6 +25,11 @@ class Item < ApplicationRecord
 
   scope :deep, -> { includes(:account, :category, :import, :rule) }
   scope :sorted, -> { order(:date) }
+
+  before_validation do
+    self.credit = nil if credit == 0
+    self.debit = nil if debit == 0
+  end
 
   validates :account, presence: true
   validates :category, presence: true
