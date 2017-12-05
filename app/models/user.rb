@@ -7,6 +7,7 @@ class User < ApplicationRecord
   acts_as_trashable
 
   has_many :accounts, dependent: :destroy
+  has_many :categories, dependent: :destroy
   has_many :rules, dependent: :destroy
 
   def self.permitted_sign_up_params # Should contain all fields as per views/users/_sign_up_fields

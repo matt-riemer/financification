@@ -1,5 +1,7 @@
 # Basically a Tag
 class Category < ApplicationRecord
+  belongs_to :user
+
   has_many :items
   has_many :rules
 
@@ -13,6 +15,7 @@ class Category < ApplicationRecord
   # timestamps
 
   validates :name, presence: true
+  validates :user, presence: true
 
   validate do
     self.errors.add(:debit_or_credit, "can't be blank") unless (debit? || credit?)

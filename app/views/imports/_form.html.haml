@@ -2,11 +2,10 @@
   %p Create items in <strong>#{f.object.account}</strong>.
 
   - if f.object.errors[:content].blank?
-    - if f.object.uncategorized_items.present?
-      = render 'categorize', f: f
-
     - if f.object.invalid_items.present?
       = render 'invalid', f: f
+    - elsif f.object.uncategorized_items.present?
+      = render 'categorize', f: f
 
     - if f.object.valid_items.present?
       = render 'items', f: f, items: f.object.valid_items

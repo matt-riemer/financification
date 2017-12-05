@@ -91,12 +91,14 @@ ActiveRecord::Schema.define(version: 20171204163910) do
   end
 
   create_table "categories", force: :cascade do |t|
+    t.bigint "user_id"
     t.string "name"
     t.string "heading"
     t.boolean "debit", default: false
     t.boolean "credit", default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
   create_table "customers", id: :serial, force: :cascade do |t|

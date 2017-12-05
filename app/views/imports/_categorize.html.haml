@@ -36,6 +36,7 @@
 
               .import-category-create{style: ('display: none' unless fr.object.category && fr.object.category.errors.present?)}
                 = fr.simple_fields_for :category, (fr.object.category || fr.object.build_category) do |fc|
+                  = fc.input :user_id, as: :hidden, input_html: { value: (fc.object.user_id || fr.object.user_id) }
                   = fc.input :name, label: false, required: false, placeholder: 'New Category Name'
                   .row
                     .col-sm-8

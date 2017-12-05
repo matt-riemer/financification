@@ -3,15 +3,19 @@
 
 puts '== Creating users ======================'
 
-User.new(
+user = User.new(
   first_name: 'Admin',
   last_name: 'Yarr',
   email: 'admin@codeandeffect.com',
   password: 'be_effective',
   password_confirmation: 'be_effective',
   roles: :admin
-).save!
+)
+user.save!
 
 
-Category.new(debit: true, name: 'General Income', heading: 'Income').save!
-Category.new(credit: true, name: 'General Expenses', heading: 'Expenses').save!
+user.categories.build(debit: true, name: 'General Income', heading: 'Income').save!
+user.categories.build(credit: true, name: 'General Expenses', heading: 'Expenses').save!
+user.accounts.build(name: 'Joint Chequing', category: 'Asset').save!
+user.accounts.build(name: 'Matt Visa', category: 'Asset').save!
+user.accounts.build(name: 'Roxy Visa', category: 'Asset').save!
