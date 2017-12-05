@@ -9,7 +9,7 @@ class Account < ApplicationRecord
   belongs_to :user
 
   has_many :imports, dependent: :delete_all
-  has_many :items, dependent: :delete_all
+  has_many :items, -> { order(:date, :id) }, dependent: :delete_all
 
   has_many :debits, -> { where.not(debit: nil) }, class_name: 'Item'    # Incomes - Increase value of Asset account
   has_many :credits, -> { where.not(credit: nil) }, class_name: 'Item'  # Expenses - Decrease value of Asset account
@@ -33,6 +33,10 @@ class Account < ApplicationRecord
 
   def to_s
     name
+  end
+
+  def items_by_year
+    @items_by_year ||= items.deep.group_by { |item| item.date.year }
   end
 
 end

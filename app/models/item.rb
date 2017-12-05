@@ -13,7 +13,6 @@ class Item < ApplicationRecord
   # Attributes
   # name        :string
   # date        :date
-  # amount      :integer
 
   # debit       :integer
   # credit      :integer
@@ -31,7 +30,7 @@ class Item < ApplicationRecord
   validates :category, presence: true
   validates :rule, presence: true
 
-  validates :name, uniqueness: { scope: [:date, :debit, :credit, :balance] }
+  validates :name, uniqueness: { scope: [:date, :debit, :credit, :balance], message: 'item already exists' }
   validates :date, presence: true
   validates :balance, presence: true
 
@@ -48,7 +47,7 @@ class Item < ApplicationRecord
   end
 
   def to_s
-    category&.name || name.presence || 'New Item'
+    [category&.name, date.to_s.presence, name.presence, (debit || credit).presence].compact.join(' - ').presence || 'New Item'
   end
 
   # We need an item key to link a non-persisted rule to a non-persisted item during an import

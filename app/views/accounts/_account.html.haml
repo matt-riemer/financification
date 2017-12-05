@@ -1,46 +1,13 @@
 %p Account Type: #{account.category}
 
 = tabs do
+  - account.items_by_year.each do |year, items|
+    = tab(year.to_s) do
+      %ul
+        - items.each do |item|
+          %li= item
+
   = tab 'Items' do
     = render_datatable AccountItemsDatatable.new(account_id: account.id)
   = tab 'Imports' do
     = render_datatable AccountImportsDatatable.new(account_id: account.id)
-
-%hr
-
-%table.table
-  %tbody
-    %tr
-      %th User
-      %td= account.user
-    %tr
-      %th Name
-      %td= account.name
-    %tr
-      %th Category
-      %td= account.category
-
-%h2 Debits / Income
-%table.table
-  - account.debits.each do |dr|
-    %tr
-      %td= dr
-      %td= dr.date
-      %td= price_to_currency(dr.debit)
-      %td= dr.note
-
-%h2 Credits / Income
-%table.table
-  - account.credits.each do |cr|
-    %tr
-      %td= cr
-      %td= cr.date
-      %td= price_to_currency(cr.credit)
-      %td= cr.note
-
-%h2 Imports
-%table.table
-  - account.imports.each do |import|
-    %tr
-      %td= import.created_at.strftime('%F')
-      %td= import.content.gsub("\n", '<br>').html_safe

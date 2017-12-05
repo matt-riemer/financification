@@ -10,8 +10,8 @@ class AccountItemsDatatable < Effective::Datatable
     col :account
     col :category
 
+    col :date
     col :name
-    col :date, as: :date
     col :debit, as: :price
     col :credit, as: :price
     col :balance, as: :price
