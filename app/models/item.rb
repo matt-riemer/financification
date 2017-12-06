@@ -60,4 +60,8 @@ class Item < ApplicationRecord
     "#{date}-#{name}-#{debit}-#{credit}-#{balance}".hash.to_s.sub('-', '')
   end
 
+  def amount
+    debit || credit
+  end
+
 end

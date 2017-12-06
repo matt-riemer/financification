@@ -3,11 +3,8 @@
 = tabs do
   - account.items_by_year.each do |year, items|
     = tab(year.to_s) do
-      %ul
-        - items.each do |item|
-          %li= item
-
+      %p= render_datatable AccountYearDatatable.new(account_id: account.id, year: year), simple: true
   = tab 'Items' do
-    = render_datatable AccountItemsDatatable.new(account_id: account.id)
+    %p= render_datatable AccountItemsDatatable.new(account_id: account.id)
   = tab 'Imports' do
-    = render_datatable AccountImportsDatatable.new(account_id: account.id)
+    %p= render_datatable AccountImportsDatatable.new(account_id: account.id)
