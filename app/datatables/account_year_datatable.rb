@@ -12,15 +12,16 @@ class AccountYearDatatable < Effective::Datatable
     col :total, as: :price do |val|
       val == 0 ? '-' : price_to_currency(val)
     end
-  end
 
+    aggregate :total
+  end
 
   collection do
     items = account.items.includes(:category).where(date: months.first.all_year).to_a
 
     categories = items.map { |item| item.category }.uniq
-    monthly = items.group_by { |item| "#{item.category.id}_#{item.date.month}" }
-    totally = items.group_by { |item| item.category.id }
+    monthly = items.group_by { |item| "#{item.category_id}_#{item.date.month}" }
+    totally = items.group_by { |item| item.category_id }
 
     categories.map do |category|
       [category] + months.map do |month|
