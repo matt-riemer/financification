@@ -1,0 +1,16 @@
+%h4 Income
+
+.year
+  = render 'header'
+  = render 'row'
+
+
+/ - debits = AccountYearDatatable.new(account_id: account.id, year: year, debits: true)
+/ %p= render_datatable(debits, simple: true)
+
+/ %h4 Expenses
+/ - credits = AccountYearDatatable.new(account_id: account.id, year: year, credits: true)
+/ %p= render_datatable(credits, simple: true)
+
+/ %h4 Cash Flow
+/ %p= debits.totals

@@ -23,6 +23,9 @@ class Item < ApplicationRecord
 
   # timestamps
 
+  scope :debits, -> { where.not(debit: nil) }
+  scope :credits, -> { where.not(credit: nil) }
+
   scope :deep, -> { includes(:account, :category, :import, :rule) }
   scope :sorted, -> { order(:date) }
 
@@ -58,6 +61,10 @@ class Item < ApplicationRecord
   # We need an item key to link a non-persisted rule to a non-persisted item during an import
   def item_key
     "#{date}-#{name}-#{debit}-#{credit}-#{balance}".hash.to_s.sub('-', '')
+  end
+
+  def row_errors
+    errors.messages.slice(:date, :name, :debit, :credit, :balance).map { |k, v| "#{k} #{v.flatten.first}" }.to_sentence
   end
 
   def amount

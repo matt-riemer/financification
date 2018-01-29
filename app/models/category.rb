@@ -1,6 +1,7 @@
 # Basically a Tag
 class Category < ApplicationRecord
   belongs_to :user
+  belongs_to :category_group
 
   has_many :items
   has_many :rules
@@ -11,6 +12,8 @@ class Category < ApplicationRecord
 
   # debit       :boolean
   # credit      :boolean
+
+  # position    :integer
 
   # timestamps
 

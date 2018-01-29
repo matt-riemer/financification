@@ -4,6 +4,7 @@
   - if f.object.errors[:content].blank?
     - if f.object.invalid_items.present?
       = render 'invalid', f: f
+
     - elsif f.object.uncategorized_items.present?
       = render 'categorize', f: f
 
