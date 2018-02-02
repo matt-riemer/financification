@@ -1,0 +1,13 @@
+= render 'sidebar' do
+  = simple_form_for(current_import, url: wizard_path(step), method: :put) do |f|
+    %p This will create items in <strong>#{f.object.account}</strong>.
+
+    - if f.object.invalid_items.present?
+      = render 'imports/invalid', f: f
+
+    = f.input :content, as: :text
+
+    - if f.object.content.blank? || f.object.errors[:content].present?
+      = render 'imports/example'
+
+    = simple_form_submit(f)

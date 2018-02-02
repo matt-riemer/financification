@@ -20,6 +20,7 @@ gem 'hamlit-rails'
 gem 'simple_form'
 gem 'sucker_punch'
 gem 'turbolinks'
+gem 'wicked'
 
 gem 'effective_addresses'
 gem 'effective_assets'

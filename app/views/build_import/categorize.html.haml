@@ -1,0 +1,13 @@
+= render 'sidebar' do
+  = simple_form_for(current_import, url: wizard_path(step), method: :put) do |f|
+    = hidden_field_tag 'item_id', current_item.id
+
+    %p There are #{pluralize(f.object.uncategorized_items.length, 'uncategorized item')} remaining.
+    %hr
+    %p Please assign a category to the following item:
+    %br
+
+    = f.simple_fields_for :items, current_item do |f|
+      = render 'categorize_form', f: f
+
+    = simple_form_submit(f)

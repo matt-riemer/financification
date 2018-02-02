@@ -1,14 +1,17 @@
 # A line item from a bank account statement
 
 class Item < ApplicationRecord
-  attr_accessor :index # Just for import
+  attr_accessor :index # For import
+  attr_accessor :current_step
 
-  belongs_to :account
-  belongs_to :category
   belongs_to :import
-  belongs_to :rule
+  belongs_to :account, optional: true  # Only required once import is completed
 
-  accepts_nested_attributes_for :category
+  belongs_to :category
+  accepts_nested_attributes_for :category, reject_if: Proc.new { |atts| atts['name'].blank? }
+
+  belongs_to :rule, optional: true # Not required
+  accepts_nested_attributes_for :rule, reject_if: Proc.new { |atts| Rule::MATCHES.all? { |match| [0, '0', nil, '', false, 'false'].include?(atts[match]) } }
 
   # Attributes
   # name        :string
@@ -34,9 +37,9 @@ class Item < ApplicationRecord
     self.debit = nil if debit == 0
   end
 
-  validates :account, presence: true
-  validates :category, presence: true
-  validates :rule, presence: true
+  validates :account, presence: true, if: -> { import&.completed? }
+  validates :category, presence: true, if: -> { import&.completed? }
+  validates :category_id, presence: true, if: -> { persisted? }
 
   validates :name, uniqueness: { scope: [:date, :debit, :credit, :balance], message: 'item already exists' }
   validates :date, presence: true
@@ -44,8 +47,8 @@ class Item < ApplicationRecord
 
   validate do
     unless (debit.present? || credit.present?)
-      self.errors.add(:debit, "can't be blank")
-      self.errors.add(:credit, "can't be blank")
+      self.errors.add(:debit, 'at least one required')
+      self.errors.add(:credit, 'at least one required')
     end
 
     unless (debit.present? ^ credit.present?) # xor

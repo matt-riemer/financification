@@ -1,0 +1,8 @@
+.row
+  .col-sm-3
+    .nav.list-group
+      - Import::STEPS.each_with_index do |(step, label), index|
+        = wizard_navigation_list_item(index, step, label)
+  .col-sm-9
+    %h1= @page_title
+    = yield

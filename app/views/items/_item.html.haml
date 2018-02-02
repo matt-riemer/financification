@@ -1,0 +1,15 @@
+.thumbnail
+  .caption
+    %h3= item.name
+
+    - if item.category.present?
+      %p item.category
+
+    %p= item.date&.strftime('%F')
+
+    %p{class: ('text-right' if item.debit?)}
+      = price_to_currency(item.debit || item.credit)
+
+    - if item.note.present?
+      %p
+        Note: #{item.note}

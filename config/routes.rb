@@ -21,7 +21,11 @@ Rails.application.routes.draw do
 
   resources :accounts do
     resources :items, except: [:index, :show]
-    resources :imports, only: [:new, :create, :show]
+
+    resources :imports, only: [:index, :show] do
+      resources :build, controller: 'build_import', only: [:show, :update]
+    end
+
   end
 
   root to: 'static_pages#home'

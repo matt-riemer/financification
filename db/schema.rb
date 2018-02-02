@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171206200449) do
+ActiveRecord::Schema.define(version: 20180129174242) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(version: 20171206200449) do
 
   create_table "categories", force: :cascade do |t|
     t.bigint "user_id"
+    t.bigint "category_group_id"
     t.string "name"
     t.string "heading"
     t.integer "position"
@@ -99,6 +100,7 @@ ActiveRecord::Schema.define(version: 20171206200449) do
     t.boolean "credit", default: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["category_group_id"], name: "index_categories_on_category_group_id"
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
@@ -126,6 +128,7 @@ ActiveRecord::Schema.define(version: 20171206200449) do
     t.text "content"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "status"
     t.index ["account_id"], name: "index_imports_on_account_id"
   end
 
@@ -278,7 +281,17 @@ ActiveRecord::Schema.define(version: 20171206200449) do
     t.bigint "category_id"
     t.bigint "import_id"
     t.bigint "user_id"
-    t.string "name_includes"
+    t.string "title"
+    t.boolean "match_name"
+    t.string "name"
+    t.boolean "match_note"
+    t.string "note"
+    t.boolean "match_price"
+    t.integer "price_min"
+    t.integer "price_max"
+    t.boolean "match_date"
+    t.datetime "start_at"
+    t.datetime "end_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["category_id"], name: "index_rules_on_category_id"

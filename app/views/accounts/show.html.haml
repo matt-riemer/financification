@@ -6,7 +6,7 @@
   .col-xs-4.text-right
     -# Import
     - if can?(:new, Import.new(account: @account))
-      = link_to 'Import Items', new_account_import_path(@account), class: 'btn btn-primary'
+      = link_to 'Import Items', account_import_build_path(@account, :new, :start), class: 'btn btn-primary'
 
     - resource.member_post_actions.each do |action|
       - if can?(action, @account) && (path = resource.action_path(action, @account)).present?

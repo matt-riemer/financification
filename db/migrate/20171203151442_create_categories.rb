@@ -2,6 +2,7 @@ class CreateCategories < ActiveRecord::Migration[5.1]
   def change
     create_table :categories do |t|
       t.references :user
+      t.references :category_group
       t.string :name
       t.string :heading
       t.integer :position
