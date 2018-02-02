@@ -52,10 +52,12 @@ class Import < ApplicationRecord
 
   def start!
     import_and_validate_items!
+    assign_item_categories!
+    save!
   end
 
   def categorize!
-    # Assign items based on rules
+    assign_item_categories!
     save!
   end
 
@@ -65,6 +67,10 @@ class Import < ApplicationRecord
   end
 
   protected
+
+  def assign_item_categories!
+    # From rules!
+  end
 
   def import_and_validate_items!
     rows = begin

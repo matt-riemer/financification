@@ -42,12 +42,15 @@ class BuildImportController < ApplicationController
         when :start
           current_import.assign_attributes(permitted_params)
           current_import.start!
-          current_import.categorize!
+
+          # Lucky import. It knows all the categories.
+          @skip_to = :review if current_import.uncategorized_items.blank?
         when :categorize
 
           current_item.current_step = step
           current_item.assign_attributes(permitted_params)
           current_item.save!
+
           current_import.categorize!
 
           # Repeat this step until all categorized
