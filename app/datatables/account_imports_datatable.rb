@@ -8,7 +8,7 @@ class AccountImportsDatatable < Effective::Datatable
 
     col :account
     col :created_at
-    col :items
+    col :items, search: { as: :string }
 
     actions_col
   end

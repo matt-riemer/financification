@@ -1,0 +1,37 @@
+= render 'sidebar' do
+
+  = simple_form_for(current_import, url: wizard_path(step), method: :put) do |f|
+
+    %p Importing #{pluralize(f.object.items.length, 'item')} into #{content_tag(:strong, f.object.account)}:
+
+    %table.table
+      %thead
+        %tr
+          %th Date
+          %th Debit
+          %th Credit
+          %th Name
+          %th Category
+          %th Rule
+
+      %tbody
+        = f.simple_fields_for :items do |f|
+          - item = f.object
+
+          %tr
+            %td= item.date&.strftime('%F')
+            %td.text-right= price_to_currency(item.debit) if item.debit
+            %td.text-right= price_to_currency(item.credit) if item.credit
+            %td
+              = item.name
+              - if item.note.present?
+                %br
+                Note: #{item.note}
+            %td
+              = f.input :category_id, label: false, required: false, as: :effective_select, input_js: { placeholder: 'Choose Category' },
+                collection: item_category_collection(item), grouped: true
+
+            %td
+              %small= item.rule
+
+    = simple_form_submit(f)

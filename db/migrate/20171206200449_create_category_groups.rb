@@ -3,6 +3,8 @@ class CreateCategoryGroups < ActiveRecord::Migration[5.1]
     create_table :category_groups do |t|
       t.references :user
       t.string :name
+      t.boolean :debit
+      t.boolean :credit
       t.integer :position
       t.datetime :created_at
       t.datetime :updated_at

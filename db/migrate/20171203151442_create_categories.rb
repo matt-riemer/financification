@@ -4,10 +4,9 @@ class CreateCategories < ActiveRecord::Migration[5.1]
       t.references :user
       t.references :category_group
       t.string :name
-      t.string :heading
       t.integer :position
-      t.boolean :debit, default: false
-      t.boolean :credit, default: false
+      t.boolean :debit
+      t.boolean :credit
       t.datetime :created_at
       t.datetime :updated_at
     end

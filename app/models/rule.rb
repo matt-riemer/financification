@@ -82,8 +82,8 @@ class Rule < ApplicationRecord
       ("name matches: #{name}" if match_name?),
       ("note matches: #{note}" if match_note?),
       ("price matches: #{price_min}..#{price_max}" if match_price?),
-      ("date matches: #{date_min&.strftime('%F')}..#{date_max&.strftime('%F')}" if match_date?),
-    ].join(', ')
+      ("date matches: #{start_at&.strftime('%F')}..#{end_at&.strftime('%F')}" if match_date?),
+    ].compact.join(', ')
   end
 
 end

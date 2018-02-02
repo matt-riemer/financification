@@ -2,10 +2,13 @@
 class CategoryGroup < ApplicationRecord
   belongs_to :user
 
-  has_many :categories
+  has_many :categories, -> { order(:name) }
 
   # Attributes
   # name        :string
+  # debit       :boolean
+  # credit      :boolean
+
   # position    :integer
 
   # timestamps

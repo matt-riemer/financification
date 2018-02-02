@@ -8,7 +8,6 @@ class Category < ApplicationRecord
 
   # Attributes
   # name        :string
-  # heading     :string
 
   # debit       :boolean
   # credit      :boolean
@@ -20,9 +19,15 @@ class Category < ApplicationRecord
   validates :name, presence: true
   validates :user, presence: true
 
+  validates :category_group_id, presence: true
+
   validate do
     self.errors.add(:debit_or_credit, "can't be blank") unless (debit? || credit?)
     self.errors.add(:debit_or_credit, "can't be both") unless (debit? ^ credit?) # xor
+  end
+
+  validate(if: -> { category_group }) do
+    self.errors.add(:category_group_id, 'heading must match category debit/credit') unless category_group.debit? == debit?
   end
 
   scope :sorted, -> { order(:debit, :name) }

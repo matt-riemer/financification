@@ -35,24 +35,31 @@ class BuildImportController < ApplicationController
 
     current_import.current_step = step
     current_import.current_user = current_user
-    current_import.assign_attributes(permitted_params)
 
     Import.transaction do
       begin
         case step
         when :start
+          current_import.assign_attributes(permitted_params)
           current_import.start!
+          current_import.categorize!
         when :categorize
-          current_import.save!
+
+          current_item.current_step = step
+          current_item.assign_attributes(permitted_params)
+          current_item.save!
+          current_import.categorize!
+
           # Repeat this step until all categorized
-          @skip_to = step if current_item.present?
+          @skip_to = step if current_import.uncategorized_items.present?
         when :review
+          current_import.assign_attributes(permitted_params)
+          current_import.complete!
         when :complete
+          # Shouldn't happen
         else
           raise 'Unknown step'
         end
-
-        binding.pry
 
         Rails.logger.info "SUCCESS"
 
@@ -64,8 +71,6 @@ class BuildImportController < ApplicationController
         raise ActiveRecord::Rollback
       end
     end
-
-    binding.pry
 
     render_step wizard_value(step)  # An error occurred, render the show action
   end
@@ -105,12 +110,13 @@ protected
       params.require(:import).permit(:content)
     when :categorize
       params.require(:import).permit(
-        items_attributes: [:id, :note, :category_id, :current_step,
+        items_attributes: [:id, :note, :category_id,
           category_attributes: [:name, :category_group_id],
           rule_attributes: [:match_name, :name, :match_note, :note, :match_price, :price_min, :price_max, :match_date, :start_at, :end_at],
         ]
-      )
+      )[:items_attributes]['0']  # we update current_item
     when :review
+      params.require(:import).permit(items_attributes: [:id, :category_id])
     when :complete
     end
   end

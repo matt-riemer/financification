@@ -51,12 +51,22 @@ class Import < ApplicationRecord
   end
 
   def start!
-    import_and_validate_items && save!
+    import_and_validate_items!
+  end
+
+  def categorize!
+    # Assign items based on rules
+    save!
+  end
+
+  def complete!
+    items.each { |item| item.account = account }
+    save!
   end
 
   protected
 
-  def import_and_validate_items
+  def import_and_validate_items!
     rows = begin
       CSV.parse(content.to_s)
     rescue => e

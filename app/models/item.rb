@@ -8,7 +8,7 @@ class Item < ApplicationRecord
   belongs_to :account, optional: true  # Only required once import is completed
 
   belongs_to :category
-  accepts_nested_attributes_for :category, reject_if: Proc.new { |atts| atts['name'].blank? }
+  accepts_nested_attributes_for :category, reject_if: Proc.new { |atts| atts['name'].blank? && atts['category_group_id'].blank? }
 
   belongs_to :rule, optional: true # Not required
   accepts_nested_attributes_for :rule, reject_if: Proc.new { |atts| Rule::MATCHES.all? { |match| [0, '0', nil, '', false, 'false'].include?(atts[match]) } }
@@ -37,11 +37,29 @@ class Item < ApplicationRecord
     self.debit = nil if debit == 0
   end
 
-  validates :account, presence: true, if: -> { import&.completed? }
-  validates :category, presence: true, if: -> { import&.completed? }
-  validates :category_id, presence: true, if: -> { persisted? }
+  # Fix a newly built category
+  before_validation(if: -> { category&.new_record? }) do
+    category.debit = true if debit.present?
+    category.credit = true if credit.present?
+    category.user = import.account.user
+  end
 
-  validates :name, uniqueness: { scope: [:date, :debit, :credit, :balance], message: 'item already exists' }
+  # Fix a newly built rule
+  before_validation(if: -> { rule&.new_record? }) do
+    rule.category = category
+    rule.user = import.account.user
+  end
+
+  # So this starts off as a valid item if name, date, amount, balance
+
+  # Then we categorize it
+  validates :category_id, presence: true, if: -> { current_step == :categorize && category.blank? }
+
+  # Then we assign an account, and it's fully done.
+  validates :category_id, presence: true, if: -> { account.present? }
+  validates :category, presence: true, if: -> { account.present? }
+
+  validates :name, presence: true, uniqueness: { scope: [:date, :debit, :credit, :balance], message: 'already exists' }
   validates :date, presence: true
   validates :balance, presence: true
 
@@ -58,16 +76,16 @@ class Item < ApplicationRecord
   end
 
   def to_s
-    [category&.name, date.to_s.presence, name.presence, (debit || credit).presence].compact.join(' - ').presence || 'New Item'
-  end
-
-  # We need an item key to link a non-persisted rule to a non-persisted item during an import
-  def item_key
-    "#{date}-#{name}-#{debit}-#{credit}-#{balance}".hash.to_s.sub('-', '')
+    [category&.name, date.to_s.presence, name.presence, amount.presence].compact.join(' - ').presence || 'New Item'
   end
 
   def row_errors
-    errors.messages.slice(:date, :name, :debit, :credit, :balance).map { |k, v| "#{k} #{v.flatten.first}" }.to_sentence
+    errors.messages
+      .slice(:date, :name, :debit, :credit, :balance)
+      .map { |k, v| "#{k} #{v.flatten.first}" }
+      .to_sentence
+      .sub('name already exists', 'you already imported this item')
+      .sub('debit at least one required, credit at least one required', "amount can't be blank")
   end
 
   def amount

@@ -94,10 +94,9 @@ ActiveRecord::Schema.define(version: 20180129174242) do
     t.bigint "user_id"
     t.bigint "category_group_id"
     t.string "name"
-    t.string "heading"
     t.integer "position"
-    t.boolean "debit", default: false
-    t.boolean "credit", default: false
+    t.boolean "debit"
+    t.boolean "credit"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["category_group_id"], name: "index_categories_on_category_group_id"
@@ -107,6 +106,8 @@ ActiveRecord::Schema.define(version: 20180129174242) do
   create_table "category_groups", force: :cascade do |t|
     t.bigint "user_id"
     t.string "name"
+    t.boolean "debit"
+    t.boolean "credit"
     t.integer "position"
     t.datetime "created_at"
     t.datetime "updated_at"
