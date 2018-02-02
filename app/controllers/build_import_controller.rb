@@ -55,17 +55,12 @@ class BuildImportController < ApplicationController
         when :review
           current_import.assign_attributes(permitted_params)
           current_import.complete!
-        when :complete
-          # Shouldn't happen
         else
           raise 'Unknown step'
         end
 
-        Rails.logger.info "SUCCESS"
-
         redirect_to wizard_path(@skip_to || next_step, import_id: current_import.id) and return
       rescue => e
-        Rails.logger.info "ERRORS"
         flash.delete(:success)
         flash.now[:error] = "#{e.message}.  Please try again."
         raise ActiveRecord::Rollback
@@ -117,43 +112,13 @@ protected
       )[:items_attributes]['0']  # we update current_item
     when :review
       params.require(:import).permit(items_attributes: [:id, :category_id])
-    when :complete
     end
   end
 
 private
 
-
-  # def enforce_current_step
-  #   return if current_import.last_completed_student_step == :start # Allows a user clicking Edit on Submit(2) to return to Start(1)
-
-  #   # Don't let them go onto a previous step
-  #   if current_import.has_completed_student_step?(step) && step != steps.last
-  #     flash[:info] = "You have completed the #{Intern::STUDENT_STEPS.fetch(step)} step. You have been moved to the #{Intern::STUDENT_STEPS.fetch(current_import.first_uncompleted_student_step)} step."
-  #     redirect_to wizard_path(current_import.first_uncompleted_student_step) and return
-  #   end
-
-  #   # Don't let them go onto next step until previous one has been completed
-  #   unless step == steps.first || current_import.has_completed_student_step?(previous_step)
-  #     flash[:danger] = "You must complete the #{Intern::STUDENT_STEPS.fetch(current_import.first_uncompleted_student_step)} step before continuing."
-  #     redirect_to wizard_path(current_import.first_uncompleted_student_step) and return
-  #   end
-  # end
-
-  # def enforce_internship
-  #   unless current_importship.present?
-  #     flash[:danger] = "Unable to find an internship for the passed internship_id."
-  #     redirect_to root_path
-  #   end
-  # end
-
-  # def enforce_last_step_if_complete
-  #   if current_import.has_completed_student_step?(steps.last) && step != steps.last
-  #     redirect_to wizard_path(steps.last) and return
-  #   end
-  # end
-
   def set_page_title
     @page_title = Import::STEPS.fetch(step)
   end
+
 end
