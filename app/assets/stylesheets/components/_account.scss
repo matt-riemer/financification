@@ -27,6 +27,8 @@
 
   td.items, td.total {
     text-align: right;
+
+    > a { color: #333; }
   }
 
   td.total {

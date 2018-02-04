@@ -1,14 +1,12 @@
 module ApplicationHelper
 
-  def frow(value)
-    if value.kind_of?(String)
-      value
-    elsif value.blank?
-      '-'
-    elsif value.to_i == 0
-      '-'
-    else
-      price_to_currency(value).sub('$', '')
+  def frow(items)
+    return '-' if items.blank? || items == 0
+    return price_to_currency(items).sub('$', '') if items.kind_of?(Fixnum)
+    return items unless items.kind_of?(Array)
+
+    content_tag(:a, href: '#', tabindex: 0, data: { trigger: 'focus', toggle: 'popover', content: render('accounts/popover', items: items)}) do
+      price_to_currency(items.sum(&:amount)).sub('$', '')
     end
   end
 

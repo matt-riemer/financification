@@ -1,0 +1,31 @@
+%p
+  = pluralize(items.length, 'item')
+  with
+  = price_to_currency(items.sum(&:amount))
+  total:
+
+%table.table.table-striped
+  - items.each do |item|
+    %tr
+      %td
+        = item.name
+
+        %br
+        = item.date.strftime('%F')
+
+        - if item.note.present?
+          %br
+          Note: #{item.note}
+
+        %br
+        = item.category
+
+        - if item.rule.present?
+          %br
+          = link_to item.rule, '#'
+
+      %td.text-right
+        = price_to_currency(item.amount).sub('$', '')
+
+        %br
+        = glyphicon_to('edit', edit_account_item_path(item.account_id, item))

@@ -70,10 +70,10 @@ class Rule < ApplicationRecord
 
   def to_s
     [
-      ("name matches: #{name}" if match_name?),
-      ("note matches: #{note}" if match_note?),
-      ("amount matches: #{amount_min}..#{amount_max}" if match_amount?),
-      ("date matches: #{start_at&.strftime('%F')}..#{end_at&.strftime('%F')}" if match_date?),
+      (name if match_name?),
+      ("note: #{note}" if match_note?),
+      ("#{('%0.2f' % (amount_min / 100.0))} to #{('%0.2f' % (amount_max / 100.0))}" if match_amount?),
+      ("#{start_at&.strftime('%F')} to #{end_at&.strftime('%F')}" if match_date?),
     ].compact.join(', ')
   end
 

@@ -23,11 +23,11 @@
           %td.category= row[0]
           - (1..12).each do |x|
             %td.items= frow(row[x])
-          %td.total= frow(row[13])
+          %td.total= frow(row[13].sum(&:amount))
 
       %tr.category-footer
         %th{colspan: 13}
-        %td.total= frow(categories.map { |(name, category_id)| credits.collection[category_id]&.last || 0 }.sum)
+        %td.total= frow(categories.flat_map { |(name, category_id)| credits.collection[category_id]&.last }.compact.sum(&:amount))
 
     %tr.category-header
       %th{colspan: 14}
@@ -35,10 +35,10 @@
   %tfoot
     - row = credits.totals
     %tr
-      %td.category= row[0]
+      %td.category #{year} Total
       - (1..12).each do |x|
-        %td.items= frow(row[x])
-      %td.total= frow(row[13])
+        %td.items= frow(row[x].sum(&:amount))
+      %td.total= price_to_currency(row[13].sum(&:amount))
 
 %h3 Expenses
 - debits = AccountYear.new(account: account, year: year, debits: true)
@@ -65,11 +65,11 @@
           %td.category= row[0]
           - (1..12).each do |x|
             %td.items= frow(row[x])
-          %td.total= frow(row[13])
+          %td.total= frow(row[13].sum(&:amount))
 
       %tr.category-footer
         %th{colspan: 13}
-        %td.total= frow(categories.map { |(name, category_id)| debits.collection[category_id]&.last || 0 }.sum)
+        %td.total= frow(categories.flat_map { |(name, category_id)| debits.collection[category_id]&.last }.compact.sum(&:amount))
 
     %tr.category-header
       %th{colspan: 14}
@@ -77,7 +77,7 @@
   %tfoot
     - row = debits.totals
     %tr
-      %td.category= row[0]
+      %td.category #{year} Total
       - (1..12).each do |x|
-        %td.items= frow(row[x])
-      %td.total= frow(row[13])
+        %td.items= frow(row[x].sum(&:amount))
+      %td.total= price_to_currency(row[13].sum(&:amount))

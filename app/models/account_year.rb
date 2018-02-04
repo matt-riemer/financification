@@ -19,8 +19,8 @@ class AccountYear
       categories.inject({}) do |h, category|
         h[category.id] = (
           [category] + months.map do |month|
-            monthly.fetch("#{category.id}_#{month.month}", []).map { |item| item.amount }.sum
-          end + [totally.fetch(category.id, []).map { |item| item.amount }.sum]
+            monthly.fetch("#{category.id}_#{month.month}", [])
+          end + [totally.fetch(category.id, [])]
         ); h
       end
     )
@@ -29,10 +29,7 @@ class AccountYear
   def totals
     @totals ||= (
       monthly = items.group_by { |item| Time.zone.local(year, item.date.month) }
-
-      ['Total'] + months.map do |month|
-        monthly.fetch(month, []).map { |item| item.amount }.sum
-      end + [items.map { |item| item.amount }.sum]
+      ['Total'] + months.map { |month| monthly.fetch(month, []) } + [items]
     )
   end
 
@@ -52,7 +49,7 @@ class AccountYear
 
   def items
     @items ||= (
-      items = account.items.includes(:category).where(date: months.first.all_year).to_a
+      items = account.items.deep.where(date: months.first.all_year).to_a
 
       # Items scoped by debits or credits
       items = items.select { |item| item.debit.present? } if @debits
