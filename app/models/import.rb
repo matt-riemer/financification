@@ -113,17 +113,4 @@ class Import < ApplicationRecord
     true
   end
 
-  # def build_new_rules
-  #   # Build a new rule for any items that are missing a category
-  #   uncategorized_items.each do |item|
-  #     new_rules.find { |rule| rule.item_key == item.item_key } || self.rules.build(item_key: item.item_key, name_includes: item.name)
-  #   end
-
-  #   # Assign the items so form works with new and existing (invalid) rules
-  #   new_rules.each do |rule|
-  #     item = items.find { |item| rule.item_key == item.item_key }
-  #     rule.assign_attributes(item: item, item_key: item.item_key, user: current_user)
-  #   end
-  # end
-
 end

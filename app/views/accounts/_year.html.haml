@@ -1,68 +1,83 @@
-%h4 Income
-
-
-- credits = AccountYearDatatable.new(account_id: account.id, year: year, credits: true)
-= render_datatable(credits)
-
-.year
-  /= render 'header'
-  /= render 'row'
-
-%h4 Income
+%h3 Income
 - credits = AccountYear.new(account: account, year: year, credits: true)
 
-.year
-  = render 'header'
-  - credits.collection.each do |row|
-    .row.year-row
-      .col-md-3.no-padding
-        .col-md-9.col-category= row[0]
-        .col-md-3= row[1]
-      .col-md-3.no-padding
-        .col-md-3= row[2]
-        .col-md-3= row[3]
-        .col-md-3= row[4]
-        .col-md-3= row[5]
-      .col-md-3.no-padding
-        .col-md-3= row[6]
-        .col-md-3= row[7]
-        .col-md-3= row[8]
-        .col-md-3= row[9]
-      .col-md-3.no-padding
-        .col-md-3= row[10]
-        .col-md-3= row[11]
-        .col-md-3= row[12]
-        .col-md-3.col-total= row[13]
-
-%hr
-
-%table.table
+%table.table.table-account.table-hover
   %thead
+    %th
+    - credits.months.each do |month|
+      %th= month.strftime('%b')
+    %th #{year} Total
+
+  %tbody
+    - item_category_collection(credits).each do |category_group, categories|
+      - next unless categories.present?
+      - next if categories.none? { |(name, category_id)| credits.collection[category_id].present? }
+
+      %tr.category-header
+        %th{colspan: 14}
+          %em= category_group
+
+      - categories.each do |(name, category_id)|
+        - next unless (row = credits.collection[category_id])
+        %tr
+          %td.category= row[0]
+          - (1..12).each do |x|
+            %td.items= frow(row[x])
+          %td.total= frow(row[13])
+
+      %tr.category-footer
+        %th{colspan: 13}
+        %td.total= frow(categories.map { |(name, category_id)| credits.collection[category_id]&.last || 0 }.sum)
+
+    %tr.category-header
+      %th{colspan: 14}
+
+  %tfoot
+    - row = credits.totals
     %tr
-      %th Category
-      - credits.months.each do |month|
-        %th= month.strftime('%b')
-      %th Total
+      %td.category= row[0]
+      - (1..12).each do |x|
+        %td.items= frow(row[x])
+      %td.total= frow(row[13])
+
+%h3 Expenses
+- debits = AccountYear.new(account: account, year: year, debits: true)
+
+%table.table.table-account.table-hover
+  %thead
+    %th
+    - debits.months.each do |month|
+      %th= month.strftime('%b')
+    %th #{year} Total
 
   %tbody
-    - credits.collection.each do |row|
-      %tr
-        - 0.upto(13).each do |x|
-          %td= row[x]
+    - item_category_collection(debits).each_with_index do |(category_group, categories), index|
+      - next unless categories.present?
+      - next if categories.none? { |(name, category_id)| debits.collection[category_id].present? }
 
-%p One thing
-%table.table
-  %tbody
-    - credits.collection.each do |row|
-      %tr
-        - 0.upto(13).each do |x|
-          %td= row[x]
+      %tr.category-header
+        %th{colspan: 14}
+          %em= category_group
 
+      - categories.each do |(name, category_id)|
+        - next unless (row = debits.collection[category_id])
+        %tr
+          %td.category= row[0]
+          - (1..12).each do |x|
+            %td.items= frow(row[x])
+          %td.total= frow(row[13])
 
-/ - debits = AccountYearDatatable.new(account_id: account.id, year: year, debits: true)
-/ %p= render_datatable(debits, simple: true)
+      %tr.category-footer
+        %th{colspan: 13}
+        %td.total= frow(categories.map { |(name, category_id)| debits.collection[category_id]&.last || 0 }.sum)
 
-/ %p= render_datatable(credits, simple: true)
+    %tr.category-header
+      %th{colspan: 14}
 
-/ %h4 Cash Flow
-/ %p= debits.totals
+  %tfoot
+    - row = debits.totals
+    %tr
+      %td.category= row[0]
+      - (1..12).each do |x|
+        %td.items= frow(row[x])
+      %td.total= frow(row[13])

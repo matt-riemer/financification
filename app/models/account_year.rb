@@ -16,26 +16,36 @@ class AccountYear
       totally = items.group_by { |item| item.category_id }
 
       # For each category, category, months, total
-      categories.map do |category|
-        [category] + months.map do |month|
-          monthly.fetch("#{category.id}_#{month.month}", []).map { |item| item.amount }.sum
-        end + [totally.fetch(category.id, []).map { |item| item.amount }.sum]
+      categories.inject({}) do |h, category|
+        h[category.id] = (
+          [category] + months.map do |month|
+            monthly.fetch("#{category.id}_#{month.month}", []).map { |item| item.amount }.sum
+          end + [totally.fetch(category.id, []).map { |item| item.amount }.sum]
+        ); h
       end
     )
   end
 
   def totals
     @totals ||= (
-      monthly = items.group_by { |item| item.date.month }
+      monthly = items.group_by { |item| Time.zone.local(year, item.date.month) }
 
       ['Total'] + months.map do |month|
-        monthly.fetch(month, []).map { |item| item.amount.sum }
+        monthly.fetch(month, []).map { |item| item.amount }.sum
       end + [items.map { |item| item.amount }.sum]
     )
   end
 
   def months
     @months ||= (1..12).map { |month| Time.zone.local(year, month) }
+  end
+
+  def debit
+    true if @debits
+  end
+
+  def credit
+    true if @credits
   end
 
   private

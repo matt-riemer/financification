@@ -1,5 +1,17 @@
 module ApplicationHelper
 
+  def frow(value)
+    if value.kind_of?(String)
+      value
+    elsif value.blank?
+      '-'
+    elsif value.to_i == 0
+      '-'
+    else
+      price_to_currency(value).sub('$', '')
+    end
+  end
+
   def item_category_collection(item)
     user = (item.account || item.import.account).user
 
