@@ -15,7 +15,7 @@
     .col-sm-4
       %strong Rule
 
-  - items.each do |item|
+  - import.items.each do |item|
     .row
       .col-sm-1= item.date&.strftime('%F')
       .col-sm-1.text-right= price_to_currency(item.debit) if item.debit
