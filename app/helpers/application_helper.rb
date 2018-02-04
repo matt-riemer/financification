@@ -10,6 +10,10 @@ module ApplicationHelper
     end
   end
 
+  def user_category_collection(user)
+    user.category_groups.inject({}) { |h, cg| h[cg.name] = cg.categories.map { |c| [c.name, c.id] }; h }
+  end
+
   def item_category_group_collection(item)
     user = (item.account || item.import.account).user
 

@@ -1,6 +1,6 @@
 = simple_form_for(item, url: item.persisted? ? account_item_path(item.account, item) : account_items_path(item.account)) do |f|
   .row
-    .col-sm-6= f.input :category_id, as: :effective_select, collection: Category.sorted
+    .col-sm-6= f.input :category_id, as: :effective_select, collection: item_category_collection(item), grouped: true
 
   .row
     .col-sm-2= f.input :date, as: :effective_date_picker

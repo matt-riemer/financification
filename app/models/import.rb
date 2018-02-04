@@ -18,7 +18,7 @@ class Import < ApplicationRecord
   has_many :rules
   accepts_nested_attributes_for :rules
 
-  has_many :items, -> { order(:id) }
+  has_many :items, -> { order(:id).merge(Item.deep) }
   accepts_nested_attributes_for :items
 
   # Attributes
@@ -35,7 +35,7 @@ class Import < ApplicationRecord
   validates :current_user, presence: true
   validates :account, presence: true
 
-  scope :deep, -> { includes(:items, :rules) }
+  scope :deep, -> { includes(:rules, items: :category) }
 
   def to_s
     created_at&.strftime('%F') || 'New Import'
@@ -69,7 +69,14 @@ class Import < ApplicationRecord
   protected
 
   def assign_item_categories!
-    # From rules!
+    account.user.rules.each do |rule|
+      uncategorized_items.each do |item|
+        next unless rule.match?(item)
+
+        item.rule = rule
+        item.category = rule.category
+      end
+    end
   end
 
   def import_and_validate_items!

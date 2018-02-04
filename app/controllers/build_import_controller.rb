@@ -51,7 +51,7 @@ class BuildImportController < ApplicationController
           current_item.assign_attributes(permitted_params)
           current_item.save!
 
-          current_import.categorize!
+          current_import.categorize! if current_item.rule.present?
 
           # Repeat this step until all categorized
           @skip_to = step if current_import.uncategorized_items.present?
@@ -110,7 +110,7 @@ protected
       params.require(:import).permit(
         items_attributes: [:id, :note, :category_id,
           category_attributes: [:name, :category_group_id],
-          rule_attributes: [:match_name, :name, :match_note, :note, :match_price, :price_min, :price_max, :match_date, :start_at, :end_at],
+          rule_attributes: [:match_name, :name, :match_note, :note, :match_amount, :amount_min, :amount_max, :match_date, :start_at, :end_at],
         ]
       )[:items_attributes]['0']  # we update current_item
     when :review

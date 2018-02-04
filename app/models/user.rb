@@ -10,9 +10,9 @@ class User < ApplicationRecord
   has_many :categories, dependent: :destroy
   has_many :rules, dependent: :destroy
 
-  has_many :category_groups, -> { order(:name) }
-  has_many :debit_groups, -> { where(debit: true).order(:name).includes(:categories) }, class_name: 'CategoryGroup'
-  has_many :credit_groups, -> { where(credit: true).order(:name).includes(:categories) }, class_name: 'CategoryGroup'
+  has_many :category_groups, -> { order(:credit, :debit, :position, :name) }
+  has_many :debit_groups, -> { where(debit: true).order(:position, :name).includes(:categories) }, class_name: 'CategoryGroup'
+  has_many :credit_groups, -> { where(credit: true).order(:position, :name).includes(:categories) }, class_name: 'CategoryGroup'
 
   def self.permitted_sign_up_params # Should contain all fields as per views/users/_sign_up_fields
     [:email, :password, :password_confirmation, :first_name, :last_name]

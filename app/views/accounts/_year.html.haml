@@ -1,15 +1,67 @@
 %h4 Income
 
+
+- credits = AccountYearDatatable.new(account_id: account.id, year: year, credits: true)
+= render_datatable(credits)
+
+.year
+  /= render 'header'
+  /= render 'row'
+
+%h4 Income
+- credits = AccountYear.new(account: account, year: year, credits: true)
+
 .year
   = render 'header'
-  = render 'row'
+  - credits.collection.each do |row|
+    .row.year-row
+      .col-md-3.no-padding
+        .col-md-9.col-category= row[0]
+        .col-md-3= row[1]
+      .col-md-3.no-padding
+        .col-md-3= row[2]
+        .col-md-3= row[3]
+        .col-md-3= row[4]
+        .col-md-3= row[5]
+      .col-md-3.no-padding
+        .col-md-3= row[6]
+        .col-md-3= row[7]
+        .col-md-3= row[8]
+        .col-md-3= row[9]
+      .col-md-3.no-padding
+        .col-md-3= row[10]
+        .col-md-3= row[11]
+        .col-md-3= row[12]
+        .col-md-3.col-total= row[13]
+
+%hr
+
+%table.table
+  %thead
+    %tr
+      %th Category
+      - credits.months.each do |month|
+        %th= month.strftime('%b')
+      %th Total
+
+  %tbody
+    - credits.collection.each do |row|
+      %tr
+        - 0.upto(13).each do |x|
+          %td= row[x]
+
+%p One thing
+%table.table
+  %tbody
+    - credits.collection.each do |row|
+      %tr
+        - 0.upto(13).each do |x|
+          %td= row[x]
 
 
 / - debits = AccountYearDatatable.new(account_id: account.id, year: year, debits: true)
 / %p= render_datatable(debits, simple: true)
 
-/ %h4 Expenses
-/ - credits = AccountYearDatatable.new(account_id: account.id, year: year, credits: true)
 / %p= render_datatable(credits, simple: true)
 
 / %h4 Cash Flow

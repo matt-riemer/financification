@@ -4,9 +4,9 @@
 puts '== Creating users ======================'
 
 user = User.new(
-  first_name: 'Admin',
-  last_name: 'Yarr',
-  email: 'admin@codeandeffect.com',
+  first_name: 'Matt',
+  last_name: 'Arr',
+  email: 'matthew@codeandeffect.com',
   password: 'be_effective',
   password_confirmation: 'be_effective',
   roles: :admin
@@ -14,7 +14,7 @@ user = User.new(
 user.save!
 
 # Incomes
-salary = user.category_groups.create!(credit: true, name: 'Salary')
+salary = user.category_groups.create!(credit: true, position: 0, name: 'Salary')
 income = user.category_groups.create!(credit: true, name: 'Other Income')
 
 user.categories.create!(credit: true, category_group: salary, name: 'Roxanne')
@@ -29,17 +29,19 @@ user.categories.create!(credit: true, category_group: income, name: 'Rental Inco
 user.categories.create!(credit: true, category_group: income, name: 'Others (transfers in)')
 
 # Expenses
-bills = user.category_groups.create!(debit: true, name: 'Bills')
-household = user.category_groups.create!(debit: true, name: 'Household')
-entertainment = user.category_groups.create!(debit: true, name: 'Entertainment & Hobbies')
+bills = user.category_groups.create!(debit: true, position: 0, name: 'Bills')
+life = user.category_groups.create!(debit: true, name: 'Life / Household')
+entertainment = user.category_groups.create!(debit: true, name: 'Entertainment')
+transfers = user.category_groups.create!(debit: true, name: 'Transfers')
 
-user.category_groups.create!(debit: true, name: 'Health and Wellness')
-user.category_groups.create!(debit: true, name: 'Home Renovations')
-user.category_groups.create!(debit: true, name: 'Insurance')
 user.category_groups.create!(debit: true, name: 'Banking, Professional & Governmental Fees')
-user.category_groups.create!(debit: true, name: 'Vacations')
 user.category_groups.create!(debit: true, name: 'Car Expenses')
-user.category_groups.create!(debit: true, name: 'Transfer to Visa / Other Accounts')
+user.category_groups.create!(debit: true, name: 'Child')
+user.category_groups.create!(debit: true, name: 'Company Expenses (paying personally)')
+user.category_groups.create!(debit: true, name: 'Health & Wellness')
+
+user.category_groups.create!(debit: true, name: 'Home Renovations & Maintenance')
+user.category_groups.create!(debit: true, name: 'Insurance')
 
 user.categories.create!(debit: true, category_group: bills, name: 'MCAP Mortgage')
 user.categories.create!(debit: true, category_group: bills, name: 'Property Taxes')
@@ -49,10 +51,17 @@ user.categories.create!(debit: true, category_group: bills, name: 'Internet')
 user.categories.create!(debit: true, category_group: bills, name: 'Cellphone')
 user.categories.create!(debit: true, category_group: bills, name: 'Netflix')
 
-user.categories.create!(debit: true, category_group: household, name: 'Groceries')
-user.categories.create!(debit: true, category_group: entertainment, name: 'Pizza')
+user.categories.create!(debit: true, category_group: life, name: 'Groceries')
+user.categories.create!(debit: true, category_group: life, name: 'Lunches Out (Matt)')
 
+user.categories.create!(debit: true, category_group: entertainment, name: 'Pizza / Delivery')
+user.categories.create!(debit: true, category_group: entertainment, name: 'Meals Out')
 
+user.categories.create!(debit: true, category_group: transfers, name: 'Transfer to Visa (Matt)')
+user.categories.create!(debit: true, category_group: transfers, name: 'Transfer to Visa (Roxy)')
+user.categories.create!(debit: true, category_group: transfers, name: 'Transfer to Savings')
+user.categories.create!(debit: true, category_group: transfers, name: 'Transfer Other')
+user.categories.create!(debit: true, category_group: transfers, name: 'Visa Payment')
 
 user.accounts.build(name: 'Joint Chequing', category: 'Asset').save!
 user.accounts.build(name: 'Matt Visa', category: 'Asset').save!

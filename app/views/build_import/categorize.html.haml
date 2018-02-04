@@ -1,13 +1,65 @@
 = render 'sidebar' do
+
   = simple_form_for(current_import, url: wizard_path(step), method: :put) do |f|
-    = hidden_field_tag 'item_id', current_item&.id
+    = hidden_field_tag 'item_id', current_item.id
 
     %p There are #{pluralize(f.object.uncategorized_items.length, 'uncategorized item')} remaining.
     %hr
     %p Please assign a category to the following item:
     %br
 
-    = f.simple_fields_for :items, current_item do |f|
-      = render 'categorize_form', f: f
+    = f.simple_fields_for :items, current_item do |fi|
+      .row
+        .col-xs-7
+          = render 'items/item', item: fi.object
+        .col-xs-5
+          = fi.input :note, label: false, placeholder: 'Item Note'
+
+      .row
+        .col-sm-5
+          %p Assign existing category:
+          = fi.input :category_id, label: false, required: false, as: :effective_select, input_js: { placeholder: 'Choose Category' },
+            collection: item_category_collection(fi.object), grouped: true
+
+        .col-sm-2.text-center
+          %br
+          %br
+          %p or
+        .col-sm-5
+          %p Create new category:
+          = fi.simple_fields_for :category, ((fi.object.category if fi.object.category&.errors.present?) || Category.new) do |fc|
+            = fc.input :name, label: false, required: false, placeholder: 'New Category Name'
+            = fc.input :category_group_id, required: false, label: false, as: :effective_select, input_js: { placeholder: 'Under Category Group' },
+              collection: item_category_group_collection(fi.object)
+
+      .text-center
+        = f.button :submit, 'Save and Continue', class: 'btn btn-primary', data: { disable_with: 'Saving...' }
+
+      %hr
+
+      .row
+        .col-sm-6
+          %p Optionally, create a new rule to categorize future items:
+
+          = fi.simple_fields_for :rule, (fi.object.rule || Rule.new) do |fr|
+
+            = fr.input :match_name, label: 'when name includes:'
+            .row
+              .col-sm-10
+                = fr.input :name, label: false, required: false, input_html: { value: current_item.name }
+              .col-sm-2
+                = link_to 'Snip', '#', class: 'btn btn-default', 'data-snip' => true
+
+            = fr.input :match_amount, label: 'and, when amount is:'
+            .row
+              .col-sm-5= fr.input :amount_min, as: :effective_price, label: false, required: false
+              .col-sm-2.text-center to
+              .col-sm-5= fr.input :amount_max, as: :effective_price, label: false, required: false
+
+            = fr.input :match_date, label: 'and, when date is:'
+            .row
+              .col-sm-5= fr.input :start_at, as: :effective_date_picker, label: false, required: false
+              .col-sm-2.text-center to
+              .col-sm-5= fr.input :end_at, as: :effective_date_picker, label: false, required: false
 
     = simple_form_submit(f)

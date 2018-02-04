@@ -1,3 +1,29 @@
 %p The following items were created on #{import.created_at.strftime('%F')}:
 
-= render 'items', items: import.items
+.well
+  .row
+    .col-sm-1
+      %strong Date
+    .col-sm-1.text-right
+      %strong Debit
+    .col-sm-1.text-right
+      %strong Credit
+    .col-sm-3
+      %strong Name
+    .col-sm-2
+      %strong Category
+    .col-sm-4
+      %strong Rule
+
+  - items.each do |item|
+    .row
+      .col-sm-1= item.date&.strftime('%F')
+      .col-sm-1.text-right= price_to_currency(item.debit) if item.debit
+      .col-sm-1.text-right= price_to_currency(item.credit) if item.credit
+      .col-sm-3
+        = item.name
+        - if item.note.present?
+          %br
+          Note: #{item.note}
+      .col-sm-2= item.category
+      .col-sm-4= item.rule

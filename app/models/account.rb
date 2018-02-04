@@ -5,6 +5,12 @@
 # Expense           Increase  Decrease
 # Equity/Capital    Decrease  Increase
 
+
+# Chequing
+# Savings
+# Line of Credit
+# Credit Card
+
 class Account < ApplicationRecord
   belongs_to :user
 

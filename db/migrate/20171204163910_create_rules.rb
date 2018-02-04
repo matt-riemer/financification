@@ -13,9 +13,9 @@ class CreateRules < ActiveRecord::Migration[5.1]
       t.boolean :match_note
       t.string :note
 
-      t.boolean :match_price
-      t.integer :price_min
-      t.integer :price_max
+      t.boolean :match_amount
+      t.integer :amount_min
+      t.integer :amount_max
 
       t.boolean :match_date
       t.datetime :start_at

@@ -7,7 +7,7 @@ class Rule < ApplicationRecord
   belongs_to :category
   has_many :items
 
-  MATCHES = ['match_name', 'match_note', 'match_price', 'match_date']
+  MATCHES = ['match_name', 'match_note', 'match_amount', 'match_date']
 
   # Attributes
   # title             :string
@@ -18,9 +18,9 @@ class Rule < ApplicationRecord
   # match_note        :boolean
   # note              :string
 
-  # match_price       :boolean
-  # price_min         :integer
-  # price_max         :integer
+  # match_amount       :boolean
+  # amount_min         :integer
+  # amount_max         :integer
 
   # match_date        :boolean
   # start_at          :datetime
@@ -34,21 +34,13 @@ class Rule < ApplicationRecord
   validates :name, presence: true, if: -> { match_name? }
   validates :note, presence: true, if: -> { match_note? }
 
-  validates :match_name, if: -> { match_note? || match_price? || match_date? }, presence: { message: 'required to apply additional matches' }
+  validates :match_name, if: -> { match_note? || match_amount? || match_date? }, presence: { message: 'required to apply additional matches' }
 
-  validate(if: -> { match_price? }) do
-    unless (price_min.present? || price_max.present?)
-      self.errors.add(:price_min, 'at least one required')
-      self.errors.add(:price_max, 'at least one required')
-    end
-  end
+  validates :amount_min, presence: true, if: -> { match_amount? }
+  validates :amount_max, presence: true, if: -> { match_amount? }
 
-  validate(if: -> { match_date? }) do
-    unless (start_at.present? || end_at.present?)
-      self.errors.add(:start_at, 'at least one required')
-      self.errors.add(:end_at, 'at least one required')
-    end
-  end
+  validates :start_at, presence: true, if: -> { match_date? }
+  validates :end_at, presence: true, if: -> { match_date? }
 
   # We want to validate category_id so the effective_select says "can't be blank"
   # But not enforce it when we're creating a new category
@@ -56,32 +48,31 @@ class Rule < ApplicationRecord
   validates :user, presence: true
 
   def match?(item)
-    match = false
 
     if match_name?
-      match ||= item.name.downcase.include?(name.downcase)
+      return false unless item.name.downcase.include?(name.downcase)
     end
 
     if match_note?
-      match ||= item.note.to_s.downcase.include?(note.downcase)
+      return false unless item.note.to_s.downcase.include?(note.downcase)
     end
 
-    if match_price?
-      match ||= ((price_min || 0)..(price_max || 99999)).include?(item.price)
+    if match_amount? # todo rename this amount
+      return false unless (amount_min..amount_max).cover?(item.amount)
     end
 
     if match_date?
-      match ||= ((start_at || Time.zone.local(2000, 0, 0))..(end_at || Time.zone.local(2050, 0, 0))).include?(item.date)
+      return false unless (start_at..end_at).cover?(item.date)
     end
 
-    match
+    true
   end
 
   def to_s
     [
       ("name matches: #{name}" if match_name?),
       ("note matches: #{note}" if match_note?),
-      ("price matches: #{price_min}..#{price_max}" if match_price?),
+      ("amount matches: #{amount_min}..#{amount_max}" if match_amount?),
       ("date matches: #{start_at&.strftime('%F')}..#{end_at&.strftime('%F')}" if match_date?),
     ].compact.join(', ')
   end

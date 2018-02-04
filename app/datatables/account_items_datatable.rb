@@ -8,7 +8,7 @@ class AccountItemsDatatable < Effective::Datatable
     col :id, visible: false
 
     col :account
-    col :category
+    col :category, search: { collection: user_category_collection(account.user), grouped: true }
 
     col :date
     col :name
@@ -20,6 +20,8 @@ class AccountItemsDatatable < Effective::Datatable
     col :import, visible: false
     col :rule, visible: false
     col :original, visible: false
+
+    aggregate :total
 
     actions_col
   end
