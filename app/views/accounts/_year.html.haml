@@ -81,3 +81,29 @@
       - (1..12).each do |x|
         %td.items= frow(row[x].sum(&:amount))
       %td.total= price_to_currency(row[13].sum(&:amount))
+
+
+%h3 Summary
+- summary = AccountYear.new(account: account, year: year)
+
+%table.table.table-account.table-hover
+  %thead
+    %th
+    - summary.months.each do |month|
+      %th= month.strftime('%b')
+    %th #{year} Total
+
+  %tbody
+    %tr
+      %td.category Account Balance
+      - (0..11).each do |x|
+        %td.items= frow(summary.balances[x])
+      %td.total
+
+    %tr
+      %td.category Cash Flow (Credits - Debits)
+      - (1..12).each do |x|
+        %td.items= frow(credits.totals[x].sum(&:amount) - debits.totals[x].sum(&:amount))
+      %td.total= frow(credits.totals[13].sum(&:amount) - debits.totals[13].sum(&:amount))
+
+

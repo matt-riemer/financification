@@ -33,6 +33,18 @@ class AccountYear
     )
   end
 
+  def balances
+    @balances ||= (
+      monthly = items.group_by { |item| Time.zone.local(year, item.date.month) }
+      months.map do |month|
+        monthly.fetch(month, []).sort do |a, b|
+          val = a.date <=> b.date
+          val == 0 ? a.id <=> b.id : val
+        end.last&.balance
+      end
+    )
+  end
+
   def months
     @months ||= (1..12).map { |month| Time.zone.local(year, month) }
   end
@@ -58,7 +70,5 @@ class AccountYear
       items
     )
   end
-
-
 
 end
