@@ -104,8 +104,8 @@
     %tr
       %td.category Balance on last day of month
       - (1..12).each do |x|
-        %td.items= frow(summary.balances[x])
-      %td.total= frow(summary.balances[12])
+        %td.items= fbal(summary.balances[x]&.balance, summary.balances[x])
+      %td.total= fbal(summary.balances[12]&.balance, summary.balances[12])
 
     %tr.category-footer
       %td{colspan: 14}
@@ -119,50 +119,44 @@
       - (1..12).each do |x|
         %td.items
           - cashflow1[x] = credits.totals[x].sum(&:amount) - debits.totals[x].sum(&:amount)
-          = frow(cashflow1[x])
+          = fbal(cashflow1[x])
       %td.total
         - cashflow1[13] = credits.totals[13].sum(&:amount) - debits.totals[13].sum(&:amount)
-        = frow(cashflow1[13])
+        = fbal(cashflow1[13])
 
     %tr
       %td.category Difference in Balance
       %td.items
-        - if summary.last_year_balance.present?
-          - cashflow2[1] = summary.balances[1] - summary.last_year_balance
-          = frow(cashflow2[1])
+        - if summary.balances[1].present? && summary.last_year_item.present?
+          - cashflow2[1] = summary.balances[1].balance - summary.last_year_item.balance
+          = fbal(cashflow2[1], summary.last_year_item, summary.balances[1])
         - else
-          = frow(nil)
+          = fbal(nil)
 
       - (2..12).each do |x|
         %td.items
           - if summary.balances[x].present? && summary.balances[x-1].present?
-            - cashflow2[x] = summary.balances[x] - summary.balances[x-1]
-            = frow(cashflow2[x])
+            - cashflow2[x] = summary.balances[x].balance - summary.balances[x-1].balance
+            = fbal(cashflow2[x], summary.balances[x-1], summary.balances[x])
           - else
-            = frow(nil)
+            = fbal(nil)
       %td.total
-        - if summary.last_year_balance.present? && summary.balances[12].present?
-          - cashflow2[13] = summary.balances[12] - summary.last_year_balance
-          = frow(cashflow2[13])
+        - if summary.balances[12].present? && summary.last_year_item.present?
+          - cashflow2[13] = summary.balances[12].balance - summary.last_year_item.balance
+          = fbal(cashflow2[13], summary.last_year_item, summary.balances[12])
         - else
-          = frow(nil)
+          = fbal(nil)
 
+
+  %tfoot
     %tr
       %td.category Double Check
       - (1..12).each do |x|
         %td.items
-          - if cashflow1[x].to_i == 0 || cashflow2[x].to_i == 0
-            = frow(nil)
-          - elsif cashflow1[x] == cashflow2[x]
-            = glyphicon_tag('ok')
-          - else
-            = glyphicon_tag('remove')
-
+          = double_check(cashflow1[x], cashflow2[x])
       %td.total
-        - if cashflow1[13].to_i == 0 || cashflow2[13].to_i == 0
-          = frow(nil)
-        - elsif cashflow1[13] == cashflow2[13]
-          = glyphicon_tag('ok')
+        - if cashflow1[13].present? && cashflow2[13].present?
+          = double_check(cashflow1[13], cashflow2[13], fudge: 50)
         - else
-          = glyphicon_tag('remove')
+          = fbal(nil)
 

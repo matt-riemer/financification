@@ -1,0 +1,33 @@
+%p
+  - if items.length == 1
+    = price_to_currency(items.first.balance)
+    balance
+  - else
+    = price_to_currency(items.last&.balance.to_i - items.first&.balance.to_i)
+    difference
+
+%table.table.table-striped
+  - items.each do |item|
+    %tr
+      %td
+        = item.name
+
+        %br
+        = item.date.strftime('%F')
+
+        - if item.note.present?
+          %br
+          Note: #{item.note}
+
+        %br
+        = item.category
+
+        - if item.rule.present?
+          %br
+          = link_to item.rule, '#'
+
+      %td.text-right
+        = price_to_currency(item.balance).sub('$', '')
+
+        %br
+        = glyphicon_to('edit', edit_account_item_path(item.account_id, item))

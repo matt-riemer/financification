@@ -10,6 +10,28 @@ module ApplicationHelper
     end
   end
 
+  def fbal(value, *items)
+    return '-' if value.blank? || value == 0
+    return price_to_currency(value).sub('$', '') if items.blank?
+
+    content_tag(:a, href: '#', tabindex: 0, data: { trigger: 'focus', toggle: 'popover', content: render('accounts/popover_bal', items: items)}) do
+      price_to_currency(value).sub('$', '')
+    end
+  end
+
+  def double_check(a, b, fudge: 5) # 5 cents
+    a = a.to_i
+    b = b.to_i
+
+    if a == 0 && b == 0
+      fbal(nil)
+    elsif (a - b).abs < fudge
+      glyphicon_tag('ok')
+    else
+      glyphicon_tag('remove')
+    end
+  end
+
   def item_category_collection(item)
     user = (item.account || item.import.account).user
 

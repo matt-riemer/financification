@@ -39,15 +39,17 @@ class AccountYear
       ['Balance'] + months.map do |month|
         last_day_of_month = month.end_of_month.to_date
 
-        items = monthly.fetch(month, []).select { |item| item.date == last_day_of_month }
-        items.sort { |a, b| a.id <=> b.id }.last&.balance
+        monthly.fetch(month, []).sort do |a, b|
+          val = a.date <=> b.date
+          val == 0 ? a.id <=> b.id : val
+        end.last
       end
     )
   end
 
   # At end of period
-  def last_year_balance
-    @last_year_balance ||= account.items.where(date: Time.zone.local(year-1).end_of_year.to_date).order(:id).last&.balance
+  def last_year_item
+    @last_year_item ||= account.items.where(date: Time.zone.local(year-1).all_year).order(:date, :id).last
   end
 
   def months
