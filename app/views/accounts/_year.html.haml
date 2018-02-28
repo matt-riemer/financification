@@ -26,11 +26,11 @@
           %td.total= frow(row[13].sum(&:amount))
 
       %tr.category-footer
-        %th{colspan: 13}
+        %td{colspan: 13}
         %td.total= frow(categories.flat_map { |(name, category_id)| credits.collection[category_id]&.last }.compact.sum(&:amount))
 
     %tr.category-header
-      %th{colspan: 14}
+      %td{colspan: 14}
 
   %tfoot
     - row = credits.totals
@@ -68,11 +68,11 @@
           %td.total= frow(row[13].sum(&:amount))
 
       %tr.category-footer
-        %th{colspan: 13}
+        %td{colspan: 13}
         %td.total= frow(categories.flat_map { |(name, category_id)| debits.collection[category_id]&.last }.compact.sum(&:amount))
 
     %tr.category-header
-      %th{colspan: 14}
+      %td{colspan: 14}
 
   %tfoot
     - row = debits.totals
@@ -85,6 +85,8 @@
 
 %h3 Summary
 - summary = AccountYear.new(account: account, year: year)
+- cashflow1 = {}
+- cashflow2 = {}
 
 %table.table.table-account.table-hover
   %thead
@@ -94,16 +96,73 @@
     %th #{year} Total
 
   %tbody
-    %tr
-      %td.category Account Balance
-      - (0..11).each do |x|
-        %td.items= frow(summary.balances[x])
-      %td.total
+
+    %tr.category-header
+      %th{colspan: 14}
+        %em Account Balance
 
     %tr
-      %td.category Cash Flow (Credits - Debits)
+      %td.category Balance on last day of month
       - (1..12).each do |x|
-        %td.items= frow(credits.totals[x].sum(&:amount) - debits.totals[x].sum(&:amount))
-      %td.total= frow(credits.totals[13].sum(&:amount) - debits.totals[13].sum(&:amount))
+        %td.items= frow(summary.balances[x])
+      %td.total= frow(summary.balances[12])
 
+    %tr.category-footer
+      %td{colspan: 14}
+
+    %tr.category-header
+      %th{colspan: 14}
+        %em Cash Flow
+
+    %tr
+      %td.category Credits minus Debits
+      - (1..12).each do |x|
+        %td.items
+          - cashflow1[x] = credits.totals[x].sum(&:amount) - debits.totals[x].sum(&:amount)
+          = frow(cashflow1[x])
+      %td.total
+        - cashflow1[13] = credits.totals[13].sum(&:amount) - debits.totals[13].sum(&:amount)
+        = frow(cashflow1[13])
+
+    %tr
+      %td.category Difference in Balance
+      %td.items
+        - if summary.last_year_balance.present?
+          - cashflow2[1] = summary.balances[1] - summary.last_year_balance
+          = frow(cashflow2[1])
+        - else
+          = frow(nil)
+
+      - (2..12).each do |x|
+        %td.items
+          - if summary.balances[x].present? && summary.balances[x-1].present?
+            - cashflow2[x] = summary.balances[x] - summary.balances[x-1]
+            = frow(cashflow2[x])
+          - else
+            = frow(nil)
+      %td.total
+        - if summary.last_year_balance.present? && summary.balances[12].present?
+          - cashflow2[13] = summary.balances[12] - summary.last_year_balance
+          = frow(cashflow2[13])
+        - else
+          = frow(nil)
+
+    %tr
+      %td.category Double Check
+      - (1..12).each do |x|
+        %td.items
+          - if cashflow1[x].to_i == 0 || cashflow2[x].to_i == 0
+            = frow(nil)
+          - elsif cashflow1[x] == cashflow2[x]
+            = glyphicon_tag('ok')
+          - else
+            = glyphicon_tag('remove')
+
+      %td.total
+        - if cashflow1[13].to_i == 0 || cashflow2[13].to_i == 0
+          = frow(nil)
+        - elsif cashflow1[13] == cashflow2[13]
+          = glyphicon_tag('ok')
+        - else
+          = glyphicon_tag('remove')
 
