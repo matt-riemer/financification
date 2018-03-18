@@ -1,14 +1,16 @@
-%h3 Income
-- credits = AccountYear.new(account: account, year: year, credits: true)
-
 %table.table.table-account.table-hover
-  %thead
-    %th
-    - credits.months.each do |month|
-      %th= month.strftime('%b')
-    %th #{year} Total
-
+  - credits = AccountYear.new(account: account, year: year, credits: true)
   %tbody
+    %tr.header
+      %td{colspan: 14}
+        %h3 Income
+
+    %tr.years
+      %th
+      - credits.months.each do |month|
+        %th= month.strftime('%b')
+      %th #{year} Total
+
     - item_category_collection(credits).each do |category_group, categories|
       - next unless categories.present?
       - next if categories.none? { |(name, category_id)| credits.collection[category_id].present? }
@@ -32,25 +34,26 @@
     %tr.category-header
       %td{colspan: 14}
 
-  %tfoot
-    - row = credits.totals
-    %tr
+    %tr.footer
+      - row = credits.totals
       %td.category #{year} Total
       - (1..12).each do |x|
         %td.items= frow(row[x].sum(&:amount))
       %td.total= price_to_currency(row[13].sum(&:amount))
 
-%h3 Expenses
-- debits = AccountYear.new(account: account, year: year, debits: true)
 
-%table.table.table-account.table-hover
-  %thead
-    %th
-    - debits.months.each do |month|
-      %th= month.strftime('%b')
-    %th #{year} Total
-
+  - debits = AccountYear.new(account: account, year: year, debits: true)
   %tbody
+    %tr.header
+      %td{colspan: 14}
+        %h3 Expenses
+
+    %tr.years
+      %th
+      - credits.months.each do |month|
+        %th= month.strftime('%b')
+      %th #{year} Total
+
     - item_category_collection(debits).each_with_index do |(category_group, categories), index|
       - next unless categories.present?
       - next if categories.none? { |(name, category_id)| debits.collection[category_id].present? }
@@ -74,28 +77,26 @@
     %tr.category-header
       %td{colspan: 14}
 
-  %tfoot
-    - row = debits.totals
-    %tr
+    %tr.footer
+      - row = debits.totals
       %td.category #{year} Total
       - (1..12).each do |x|
         %td.items= frow(row[x].sum(&:amount))
       %td.total= price_to_currency(row[13].sum(&:amount))
 
-
-%h3 Summary
-- summary = AccountYear.new(account: account, year: year)
-- cashflow1 = {}
-- cashflow2 = {}
-
-%table.table.table-account.table-hover
-  %thead
-    %th
-    - summary.months.each do |month|
-      %th= month.strftime('%b')
-    %th #{year} Total
-
+  - summary = AccountYear.new(account: account, year: year)
+  - cashflow1 = {}
+  - cashflow2 = {}
   %tbody
+    %tr.header
+      %td{colspan: 14}
+        %h3 Summary
+
+    %tr.years
+      %th
+      - credits.months.each do |month|
+        %th= month.strftime('%b')
+      %th #{year} Total
 
     %tr.category-header
       %th{colspan: 14}
@@ -147,9 +148,13 @@
         - else
           = fbal(nil)
 
+    %tr.category-footer
+      %td{colspan: 14}
 
-  %tfoot
-    %tr
+    %tr.category-header
+      %td{colspan: 14}
+
+    %tr.footer
       %td.category Double Check
       - (1..12).each do |x|
         %td.items

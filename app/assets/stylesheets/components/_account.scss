@@ -1,31 +1,12 @@
 .table-account {
-
-  thead {
-    th { text-align: right; }
-  }
-
-  tfoot {
-    tr {
-      td {
-        border-width: 4px;
-        border-style: double;
-        border-color: #ddd;
-        border-bottom: none;
-        border-left: none;
-        border-right: none;
-      }
-
-      td.total {
-        border-bottom: 1px solid #ddd;
-      }
-    }
-  }
+  border-top: none;
+  tbody + tbody { border: none; }
 
   td {
     font-size: smaller;
   }
 
-  td.items, td.total {
+  td.items, td.total, th {
     text-align: right;
 
     > a { color: #333; }
@@ -36,15 +17,41 @@
     border-right: 1px solid #ddd;
   }
 
-  tr.category-header {
-    th, td { border-top: none; }
+  tr.years {
+    td, th {
+      border-top: none;
+      border-bottom: 2px solid #ddd;
+    }
   }
 
+  tr.category-header {
+    th, td {
+      text-align: left;
+      border-top: none;
+    }
+  }
 
   tr.category-footer {
     td.total {
       border-left: none;
       border-right: none;
+    }
+  }
+
+  tr.footer {
+    td {
+      border-width: 4px;
+      border-style: double;
+      border-color: #ddd;
+      border-bottom: none;
+      border-left: none;
+      border-right: none;
+    }
+
+    td.total {
+      border-bottom: 1px solid #ddd;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
     }
   }
 
