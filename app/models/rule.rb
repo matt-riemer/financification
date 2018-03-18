@@ -50,7 +50,7 @@ class Rule < ApplicationRecord
   def match?(item)
 
     if match_name?
-      return false unless item.name.downcase.include?(name.downcase)
+      return false unless item.name.to_s.downcase.include?(name.downcase)
     end
 
     if match_note?

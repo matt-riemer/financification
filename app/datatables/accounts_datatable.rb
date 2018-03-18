@@ -10,6 +10,14 @@ class AccountsDatatable < Effective::Datatable
     col :name
     col :category
 
+    col :last_item_date do |account|
+      account.items.last&.date
+    end
+
+    col :last_item do |account|
+      account.items.last
+    end
+
     actions_col destroy: false
   end
 

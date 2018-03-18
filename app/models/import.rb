@@ -87,12 +87,14 @@ class Import < ApplicationRecord
       return false
     end
 
-    imported = (rows.first[0] == 'Date') ? import_td_canada_trust(rows) : import_servus(rows)
+    imported = (rows.first[0] == 'Date' || rows.first[0].chars.count { |c| c == '/'} == 2) ? import_td_canada_trust(rows) : import_servus(rows)
 
     raise 'import error' unless imported
   end
 
   def import_td_canada_trust(rows)
+    Rails.logger.info "IMPORTING TD CANADA TRUST"
+
     rows.each_with_index do |row, index|
       begin
         date, name, debit, credit, balance, note = row[0], row[1], row[2], row[3], row[4], row[5]
@@ -120,6 +122,8 @@ class Import < ApplicationRecord
   end
 
   def import_servus(rows)
+    Rails.logger.info "IMPORTING SERVUS"
+
     rows.each_with_index do |row, index|
       begin
         id, date, account, name, amount, balance, note = row[0], row[1], row[2], row[3], row[4], row[5], row[6]

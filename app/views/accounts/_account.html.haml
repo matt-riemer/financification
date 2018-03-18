@@ -1,7 +1,7 @@
 %p Account Type: #{account.category}
 
 = tabs do
-  - account.items_by_year.each do |year, items|
+  - account.items_by_year.reverse_each do |year, items|
     = tab(year.to_s) do
       = render 'year', account: account, year: year
   = tab 'Items' do
