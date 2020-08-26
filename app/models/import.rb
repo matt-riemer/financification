@@ -83,8 +83,7 @@ class Import < ApplicationRecord
     rows = begin
       CSV.parse(content.to_s)
     rescue => e
-      self.errors.add(:content, "CSV parse error: #{e.message}")
-      return false
+      raise "import error: #{e.message}"
     end
 
     imported = (rows.first[0] == 'Date' || rows.first[0].chars.count { |c| c == '/'} == 2) ? import_td_canada_trust(rows) : import_servus(rows)

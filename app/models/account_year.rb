@@ -49,7 +49,7 @@ class AccountYear
 
   # At end of period
   def last_year_item
-    @last_year_item ||= account.items.where(date: Time.zone.local(year-1).all_year).order(:date, :id).last
+    @last_year_item ||= Item.where(account: account, date: Time.zone.local(year-1).all_year).order(:date, :id).last
   end
 
   def months
@@ -68,7 +68,7 @@ class AccountYear
 
   def items
     @items ||= (
-      items = account.items.deep.where(date: months.first.all_year).to_a
+      items = Item.deep.where(account: account, date: months.first.all_year).to_a
 
       # Items scoped by debits or credits
       items = items.select { |item| item.debit.present? } if @debits
