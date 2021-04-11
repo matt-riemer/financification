@@ -11,9 +11,9 @@ class ItemsController < ApplicationController
     @account ||= Account.find(params[:account_id])
   end
 
-  def resource_redirect_path
-    account_path(account)
-  end
+  # def resource_redirect_path
+  #   account_path(account)
+  # end
 
   def item_params
     params.require(:item).permit!
