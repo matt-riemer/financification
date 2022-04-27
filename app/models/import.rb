@@ -135,7 +135,12 @@ class Import < ApplicationRecord
 
         # Parse Date
         digits = date.to_s.scan(/(\d+)/).flatten
-        date = Time.zone.local(digits[2], digits[1], digits[0])
+
+        if digits[2].length == 4
+          date = Time.zone.local(digits[2], digits[1], digits[0])
+        else
+          date = Time.zone.local(digits[0], digits[1], digits[2])
+        end
 
         item = self.items.build(
           account: nil,  # These aren't processed yet, so we don't assign them to an account.
@@ -156,5 +161,6 @@ class Import < ApplicationRecord
 
     true
   end
+
 
 end

@@ -26,7 +26,7 @@
     - if f.object.content.blank? || f.object.errors[:content].present?
       .well
         %p
-          %strong Example content
+          %strong Example TD Canada Trust Content
 
         Date,Name,Debit,Credit,Balance,Note
         %br
@@ -35,5 +35,15 @@
         11/30/2017,DOMINOS 10116,29.08,,1788.19
         %br
         11/30/2017,PAYMENT - THANK YOU,,1759.11,29.08
+
+      .well
+        %p
+          %strong Example Servus Content
+
+        ID, Date, Account Name, Description1, Amount, Balance
+        %br
+        441691406,2021-12-31,Business Pay As You Go-0,"Service Fee",-11.00,2326.24
+        %br
+        855397528,2021-12-28,Business Pay As You Go-0,"Service Charge - Interac e-Transfer",-1.50,2337.24
 
     = simple_form_submit(f)
