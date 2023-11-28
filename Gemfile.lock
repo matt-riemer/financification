@@ -84,7 +84,6 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
-    daemons (1.3.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     devise (4.7.3)
@@ -186,14 +185,12 @@ GEM
     equalizer (0.0.11)
     erubi (1.6.0)
     erubis (2.7.0)
-    eventmachine (1.2.7)
     exception_notification (4.2.1)
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
     execjs (2.7.0)
     faker (1.7.3)
       i18n (~> 0.5)
-    ffi (1.9.18)
     flamegraph (0.9.5)
     font-awesome-sass (4.7.0)
       sass (>= 3.2)
@@ -238,10 +235,6 @@ GEM
       activerecord
       kaminari-core (= 1.0.1)
     kaminari-core (1.0.1)
-    listen (3.1.5)
-      rb-fsevent (~> 0.9, >= 0.9.4)
-      rb-inotify (~> 0.9, >= 0.9.7)
-      ruby_dep (~> 1.2)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.5)
@@ -303,13 +296,9 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (12.0.0)
-    rb-fsevent (0.9.8)
-    rb-inotify (0.9.8)
-      ffi (>= 0.5.0)
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
-    ruby_dep (1.5.0)
     ruby_parser (3.15.1)
       sexp_processor (~> 4.9)
     sass (3.4.24)
@@ -334,10 +323,6 @@ GEM
     sucker_punch (2.0.2)
       concurrent-ruby (~> 1.0.0)
     temple (0.8.0)
-    thin (1.7.2)
-      daemons (~> 1.0, >= 1.0.9)
-      eventmachine (~> 1.0, >= 1.0.4)
-      rack (>= 1, < 3)
     thor (0.19.4)
     thread_safe (0.3.6)
     tilt (2.0.7)
@@ -390,7 +375,6 @@ DEPENDENCIES
   foreman
   haml-rails
   jquery-rails
-  listen
   memory_profiler
   passenger
   pg
@@ -403,13 +387,12 @@ DEPENDENCIES
   simple_form
   stackprof
   sucker_punch
-  thin
   turbolinks
   uglifier
   wicked
 
 RUBY VERSION
-   ruby 2.6.3p62
+   ruby 2.7.2p137
 
 BUNDLED WITH
    1.17.3

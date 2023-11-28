@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-ruby '2.6.3'
+ruby '2.7.2'
 
 gem 'rails'
 gem 'pg'
@@ -21,6 +21,11 @@ gem 'simple_form'
 gem 'sucker_punch'
 gem 'turbolinks'
 gem 'wicked'
+
+# gem 'execjs'
+# gem 'therubyracer'
+
+#gem 'mini_racer', '0.6.4'
 
 gem 'effective_addresses'
 gem 'effective_assets'
@@ -54,7 +59,6 @@ gem 'effective_trash'
 
 group :development do
   gem 'flamegraph'
-  gem 'listen'
   gem 'memory_profiler'
   gem 'rack-mini-profiler'
   gem 'stackprof'
@@ -63,7 +67,6 @@ end
 group :development, :test do
   gem 'dotenv-rails'
   gem 'pry-byebug' # If you encounter readline issues: rvm pkg install readline
-  gem 'thin'
 end
 
 group :test do
