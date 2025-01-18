@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 ruby '2.7.2'
 
 gem 'rails'
-gem 'pg'
+gem 'pg', '< 1.0'
 
 gem 'coffee-rails'
 gem 'sass-rails'
