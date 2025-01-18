@@ -86,13 +86,21 @@ class Import < ApplicationRecord
       raise "import error: #{e.message}"
     end
 
-    imported = (rows.first[0] == 'Date' || rows.first[0].chars.count { |c| c == '/'} == 2) ? import_td_canada_trust(rows) : import_servus(rows)
+    imported = if (rows.first[0] == 'Date' || rows.first[0].chars.count { |c| c == '/'} == 2) 
+      import_td_canada_trust_visa(rows) 
+    elsif rows.first[0].chars.count { |c| c == '-'} == 2
+      import_td_canada_trust_chequing(rows)
+    elsif (rows.first[0] == 'FullAccount' || rows.first[0].to_s.include?('Business Pay As You Go'))
+      import_servus_export(rows)
+    else
+      import_servus_old(rows)
+    end
 
     raise 'import error' unless imported
   end
 
-  def import_td_canada_trust(rows)
-    Rails.logger.info "IMPORTING TD CANADA TRUST"
+  def import_td_canada_trust_visa(rows)
+    Rails.logger.info "IMPORTING TD CANADA TRUST VISA"
 
     rows.each_with_index do |row, index|
       begin
@@ -120,8 +128,66 @@ class Import < ApplicationRecord
     true
   end
 
-  def import_servus(rows)
-    Rails.logger.info "IMPORTING SERVUS"
+  def import_td_canada_trust_chequing(rows)
+    Rails.logger.info "IMPORTING TD CANADA TRUST CHEQUING"
+
+    rows.each_with_index do |row, index|
+      begin
+        date, name, debit, credit, balance, note = row[0], row[1], row[2], row[3], row[4], row[5]
+
+        next if (date == 'Date' || ['Name', 'Transaction'].include?(name) || ['Debit', 'Withdrawl'].include?(debit))
+
+        item = self.items.build(
+          account: nil,  # These aren't processed yet, so we don't assign them to an account.
+          date: Effective::Attribute.new(:date).parse(date),
+          debit: (Effective::Attribute.new(:price).parse(debit) if debit),
+          credit: (Effective::Attribute.new(:price).parse(credit) if credit),
+          balance: (Effective::Attribute.new(:price).parse(balance) if balance),
+          index: index,
+          name: name,
+          note: note,
+          original: row.join(',')
+        )
+      rescue => e
+        self.errors.add(:content, "Line #{index+1} (#{row.join(',')}): #{e.message}")
+        return false
+      end
+    end
+
+    true
+  end
+
+  def import_servus_export(rows)
+    Rails.logger.info "IMPORTING SERVUS OLD"
+
+    rows.each_with_index do |row, index|
+      begin
+        account, date, name, note, debit, credit, balance = row[0], row[1], row[2], row[3], row[4], row[5], row[6]
+
+        next if (date == 'Date' || ['Name', 'Transaction'].include?(name) || ['DebitAmount', 'CreditAmount'].include?(debit))
+
+        item = self.items.build(
+          account: nil,  # These aren't processed yet, so we don't assign them to an account.
+          date: Effective::Attribute.new(:date).parse(date),
+          debit: (Effective::Attribute.new(:price).parse(debit) if debit),
+          credit: (Effective::Attribute.new(:price).parse(credit) if credit),
+          balance: (Effective::Attribute.new(:price).parse(balance) if balance),
+          index: index,
+          name: name,
+          note: note,
+          original: row.join(',')
+        )
+      rescue => e
+        self.errors.add(:content, "Line #{index+1} (#{row.join(',')}): #{e.message}")
+        return false
+      end
+    end
+
+    true
+  end
+
+  def import_servus_old(rows)
+    Rails.logger.info "IMPORTING SERVUS OLD"
 
     rows.each_with_index do |row, index|
       begin
